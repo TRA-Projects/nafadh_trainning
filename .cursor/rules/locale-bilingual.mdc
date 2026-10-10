@@ -1,0 +1,39 @@
+---
+description: Bilingual UI (ar/en); always use @angular/localize + core/translations
+alwaysApply: true
+---
+
+# Locale: Arabic / English
+
+This **Jobseeker** web app is **bilingual**: **English (`en`)** and **Arabic (`ar`)**.
+
+## Single translation method (always follow this)
+
+Use **one stack** for all **user-visible UI copy**. Do **not** mix ad-hoc patterns for new or edited strings.
+
+1. **`@angular/localize` everywhere**
+   - **Templates:** `i18n="@@jobseeker.<area>.<key>"` on elements (and attributes where supported). English is the **source** string in the template.
+   - **TypeScript:** `$localize`:@@jobseeker.<area>.<key>:English default`` for strings only available in code (e.g. `confirm()`, progress lines, success toasts passed to services).
+   - Use **stable, namespaced IDs** (`jobseeker.*`) so Arabic and tooling stay aligned.
+
+2. **Arabic strings live in the repo tree, merged at runtime**
+   - Add or update **`JobseekerModule/src/app/core/translations/<feature>/messages.ar.json`** (one folder per area: e.g. `common/`, `layout/`, `profile-completion/`, `login/`, `profile-tabs/`, `placeholder/`, `admin-system/`, …).
+   - Each file is a JSON object with a **`translations`** map: keys **must match** the `@@` IDs (same as in `$localize` / `i18n`).
+   - Registration: **`merge-ar-translations.ts`** merges these maps; **`main.ts`** calls `loadTranslations(mergeArTranslations())` when the persisted locale is `ar`. If you add a **new** feature folder, **import it in `merge-ar-translations.ts`**.
+
+3. **`LocaleService` — allowed uses only**
+   - Persisted locale signal, **toggle/set**, syncing **`dir` / `lang`** on the document.
+   - Choosing **data** fields from APIs that ship both languages (e.g. `NameAr` vs `NameEn`, role/breadcrumb labels from `AuthService`).
+   - **Do not** add UI string tables or helpers like `text(en, ar)` or **`locale() === 'ar' ? '…' : '…'`** for copy that belongs in **`$localize` / `i18n`.**
+
+4. **Do not (for UI copy)**
+   - Introduce duplicate English/Arabic branches in templates or components for the same label.
+   - Put new Arabic-only UI strings only in `public/assets/i18n/*.json` without also wiring **`@@` IDs** and **`core/translations/`** (legacy assets are not the source of truth for new work).
+
+5. **Exceptions (narrow)**
+   - **Server-provided** messages: show as returned; optional locale-specific fallbacks are fine when the API does not localize.
+   - **`uiAsyncStrings()`** (`ui-async.i18n.ts`): small built-in defaults for the global overlay; prefer passing **`$localize`-backed** `progressMessage` / `successMessage` from callers when you need full consistency.
+
+6. **Layout:** RTL for `ar`, LTR for `en` — handled via **`LocaleService`** on `<html>`.
+
+When adding features, assume **both** locales unless the product says otherwise. After adding strings, ensure **English** appears in templates/`$localize` and **Arabic** exists under the right **`core/translations/<feature>/messages.ar.json`** key.

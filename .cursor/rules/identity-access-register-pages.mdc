@@ -1,0 +1,44 @@
+---
+description: When adding an app page/route, register it in Identity Access (AppPages seed) so access management can grant it.
+alwaysApply: true
+---
+
+# New pages → Identity Access registration
+
+Whenever you add a **navigable page** (Angular route, sidebar link, or equivalent screen users can open), also register it in the **Identity & access** catalog in the **same change**.
+
+## Required (same PR / change)
+
+1. **Seed the AppPage** in `Bidding_DLL/Seeding/IdentityAccessAppPagesSeedData.cs`
+   - Stable `Code` (e.g. `js.admin.my-feature`, `js.operator.…`, `js.jobseeker.…`)
+   - `Url` must match the client route used by sidebar / `canShowNav` (e.g. `/admin/my-feature`)
+   - Bilingual `NameEn` / `NameAr`
+   - Correct `SystemCode` bucket (`JobseekerModule` → `js.*` helpers in that file)
+
+2. **Audience / grants**
+   - Prefer a code **prefix** already covered by `IdentityAccessSeedData.BuildRolePages()` (`js.admin.` → SystemAdmin templates, `js.operator.` → corporate/operator templates, etc.)
+   - If the page needs a **new** audience, extend `PagesMatching(...)` / role map entries in that same change so template roles (and Group → Pages UI) can assign it
+   - SystemAdmin already receives **all** seeded pages via the seeder map
+
+3. **Nav**
+   - Sidebar / `canShow('/…')` URLs must equal the seeded `Url` (case-sensitive path as used in the app)
+
+## Do not
+
+- Ship a new list/detail/admin/operator/jobseeker screen with only `app.routes.ts` + UI and **no** AppPages seed entry
+- Reuse another page’s code/url, or invent grant audiences the user did not ask for
+- Rely on “SystemAdmin bypass” alone — non-admin roles need the page in seed + role map to appear in Groups/Roles page assignment
+
+## After seed change
+
+Remind once that **API restart** (Identity Access seeder) is needed for local DB to pick up new `AppPages` / role-page links. Do **not** create EF migrations unless asked.
+
+## Example
+
+Add `/admin/foo-list` under admin:
+
+```csharp
+yield return P(s, "js.admin.foo-list", "/admin/foo-list", "Foo list", "قائمة …", i++);
+```
+
+Plus sidebar `canShow('/admin/foo-list')` and route `path: 'foo-list'`.

@@ -1,0 +1,130 @@
+<ul class="perfect-scrollbar relative h-[calc(100vh-80px)] space-y-0.5 overflow-y-auto overflow-x-hidden p-4 py-0 font-semibold">
+  <li class="nav-item">
+    <ul>
+      <li class="menu nav-item">
+        <a
+          routerLink="/dashboard"
+          routerLinkActive="active"
+          [routerLinkActiveOptions]="{ exact: true }"
+          class="nav-link group flex w-full items-center border-0 bg-transparent p-0 text-start"
+          (click)="onNav()"
+        >
+          <div class="flex items-center">
+            <img [src]="'/images/nav/dashboard.svg' | assetUrl" alt="" />
+            <span class="text-black ltr:pl-3 rtl:pr-3 dark:text-[#506690] dark:group-hover:text-white-dark">
+              <span i18n="@@jobseeker.layout.nav.dashboard">Dashboard</span>
+            </span>
+          </div>
+        </a>
+      </li>
+    </ul>
+  </li>
+  @if (variant() === 'admin') {
+    <li class="nav-item">
+      <ul>
+        <li class="menu nav-item">
+          <button
+            type="button"
+            class="nav-link group"
+            [class.active]="activeDropdown() === 'admin-identity-access'"
+            (click)="onToggle('admin-identity-access')"
+          >
+            <div class="flex items-center">
+              <img [src]="'/images/nav/user.svg' | assetUrl" alt="" />
+              <span class="text-black ltr:pl-3 rtl:pr-3 dark:text-[#506690] dark:group-hover:text-white-dark">
+                <span i18n="@@jobseeker.layout.nav.admin.identityAccess">Identity &amp; access</span>
+              </span>
+            </div>
+            <div class="rtl:rotate-180" [ngClass]="{ '!rotate-90': activeDropdown() === 'admin-identity-access' }">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M9 5L15 12L9 19" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </div>
+          </button>
+          @if (activeDropdown() === 'admin-identity-access') {
+            <ul class="sub-menu text-gray-500">
+              <li>
+                <a routerLink="/admin/users" [hidden]="!canShow('/admin/users')" routerLinkActive="active" (click)="onNav()"
+                  ><span i18n="@@jobseeker.layout.nav.admin.users">Users</span></a
+                >
+              </li>
+              <li>
+                <a routerLink="/admin/template-roles" [hidden]="!canShow('/admin/template-roles')" routerLinkActive="active" (click)="onNav()"
+                  ><span i18n="@@jobseeker.layout.nav.admin.templateRoles">Template roles</span></a
+                >
+              </li>
+              <li>
+                <a routerLink="/admin/roles" [hidden]="!canShow('/admin/roles')" routerLinkActive="active" (click)="onNav()"
+                  ><span i18n="@@jobseeker.layout.nav.admin.roles">Custom roles</span></a
+                >
+              </li>
+              <li>
+                <a routerLink="/admin/groups" [hidden]="!canShow('/admin/groups')" routerLinkActive="active" (click)="onNav()"
+                  ><span i18n="@@jobseeker.layout.nav.admin.groups">Groups</span></a
+                >
+              </li>
+            </ul>
+          }
+        </li>
+      </ul>
+    </li>
+    <li class="nav-item">
+      <ul>
+        <li class="menu nav-item">
+          <button
+            type="button"
+            class="nav-link group"
+            [class.active]="activeDropdown() === 'admin-fsd-51'"
+            (click)="onToggle('admin-fsd-51')"
+          >
+            <div class="flex items-center">
+              <img [src]="'/images/nav/settings.svg' | assetUrl" alt="" />
+              <span class="text-black ltr:pl-3 rtl:pr-3 dark:text-[#506690] dark:group-hover:text-white-dark">
+                <span i18n="@@jobseeker.layout.nav.admin.systemAdmin">System admin</span>
+              </span>
+            </div>
+            <div class="rtl:rotate-180" [ngClass]="{ '!rotate-90': activeDropdown() === 'admin-fsd-51' }">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M9 5L15 12L9 19" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </div>
+          </button>
+          @if (activeDropdown() === 'admin-fsd-51') {
+            <ul class="sub-menu text-gray-500">
+              <li>
+                <a routerLink="/admin/system-configuration" [hidden]="!canShow('/admin/system-configuration')" routerLinkActive="active" (click)="onNav()"
+                  ><span i18n="@@jobseeker.layout.nav.admin.systemConfiguration">System configuration</span></a
+                >
+              </li>
+              <li>
+                <a routerLink="/admin/constants-management" [hidden]="!canShow('/admin/constants-management')" routerLinkActive="active" (click)="onNav()"
+                  ><span i18n="@@jobseeker.layout.nav.admin.constantsManagement">Constants management</span></a
+                >
+              </li>
+              <li>
+                <a routerLink="/admin/notification-templates" [hidden]="!canShow('/admin/notification-templates')" routerLinkActive="active" (click)="onNav()"
+                  ><span i18n="@@jobseeker.layout.nav.admin.notificationTemplates">Notification templates</span></a
+                >
+              </li>
+              <li>
+                <a routerLink="/admin/audit-trail" [hidden]="!canShow('/admin/audit-trail')" routerLinkActive="active" (click)="onNav()"
+                  ><span i18n="@@jobseeker.layout.nav.admin.auditTrail">Audit trail</span></a
+                >
+              </li>
+              <li>
+                <a routerLink="/admin/notification-transactions" [hidden]="!canShow('/admin/notification-transactions')" routerLinkActive="active" (click)="onNav()"
+                  ><span i18n="@@jobseeker.layout.nav.admin.notificationTransactions">Notification transactions</span></a
+                >
+              </li>
+              <li>
+                <a routerLink="/admin/custom-notifications" [hidden]="!canShow('/admin/custom-notifications')" routerLinkActive="active" (click)="onNav()"
+                  ><span i18n="@@jobseeker.layout.nav.admin.customNotifications">Custom notifications</span></a
+                >
+              </li>
+            </ul>
+          }
+        </li>
+      </ul>
+    </li>
+  }
+</ul>

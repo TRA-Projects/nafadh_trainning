@@ -1,0 +1,7 @@
+{
+  "Data": [
+    { "Id": 1, "Name_en": "Muscat", "Name_ar": "مسقط" },
+    { "Id": 2, "Name_en": "Salalah", "Name_ar": "صلالة" },
+    { "Id": 3, "Name_en": "Sohar", "Name_ar": "صحار" }
+  ]
+}

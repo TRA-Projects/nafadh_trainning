@@ -1,0 +1,24 @@
+---
+description: Only edit the page/route the user named; do not touch other screens.
+alwaysApply: true
+---
+
+# Scope edits to mentioned pages only
+
+When the user names a page, route, or screen (e.g. `/operator/interview-scheduling`, “scheduling page”), **only change that page and the code required for that page’s behavior**.
+
+## Do
+
+- Limit UI and feature work to the named page’s component, template, styles, and its direct page-local helpers.
+- If a **shared** component is used by other pages (e.g. `interview-record-form` on edit + schedule), gate new UI/behavior behind the named page’s mode/route (e.g. `isScheduleMode()`) so other pages are unchanged.
+- Shared utils/API changes are allowed only when required for the named page; keep other call sites’ behavior the same unless the user asked to update those too.
+
+## Do not
+
+- Edit, restyle, or “align” other pages (e.g. edit-interview, view-interview, lists) when the user only mentioned one page.
+- Propagate a feature across every consumer of a shared form/table unless the user listed those pages.
+- Assume “same domain” (all interview pages) means all of them are in scope.
+
+## When unsure
+
+Ask before changing a second page or ungating shared UI for other modes.

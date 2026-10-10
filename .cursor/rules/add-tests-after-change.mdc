@@ -1,0 +1,29 @@
+---
+description: After every feature or bugfix, add 2–3 regression tests in a dedicated file.
+alwaysApply: true
+---
+
+# Add 2–3 tests after every change
+
+When a change lands (feature, rule, validation, or bugfix), **add 2–3 focused test cases in the same change** so the behavior can be re-run later.
+
+## Do
+
+- Prefer a **dedicated test file** for the change (`Bidding_Core.Tests/<Feature>Tests.cs` for rules/services; `*.spec.ts` next to an Angular component when the change is UI-only).
+- Cover the **new rule and its lock/fail path**: happy path, blocked/invalid case, and one edge (null, trim, already-approved, empty list).
+- Name tests after the product rule (e.g. `CanEdit_Approved_IsFalse`), not the implementation detail.
+- Reuse existing xUnit / Jasmine patterns in this repo. Keep tests unit-level (no DB, no HTTP) unless the change cannot be expressed that way.
+
+## Do not
+
+- Ship a behavior change with zero new assertions.
+- Dump a large suite; **2–3 cases is enough** unless the user asks for more.
+- Put the only coverage in a comment or chat summary — it must live in a test file.
+
+## Example
+
+Change: diploma marks cannot be edited after admin approve.
+
+- `CanEdit_Pending_IsTrue`
+- `CanEdit_Approved_IsFalse`
+- `HasAllMarks_RequiresEveryField`

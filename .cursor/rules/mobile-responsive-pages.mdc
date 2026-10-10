@@ -1,0 +1,25 @@
+---
+description: Pages must be usable on mobile — responsive padding, grids, tables, and modals
+alwaysApply: true
+---
+
+# Mobile-responsive pages (JobseekerModule)
+
+Every page and modal must work on small screens (~320–640px) without horizontal page scroll (tables may scroll inside a wrapper).
+
+## Required patterns
+
+1. **Page shell padding** — main content and page panels use reduced padding on small screens, e.g. `p-3 sm:p-4 md:p-6` or `p-4 sm:p-6` (not fixed `p-6` only).
+2. **Detail / label–value grids** — stack on mobile: `grid grid-cols-1 gap-2 sm:grid-cols-4` (see `detail-page-layout.mdc`).
+3. **Tables** — always wrap in `table-responsive` (or equivalent overflow-x container). Never let a wide table expand the page.
+4. **Headers / toolbars** — `flex flex-wrap` with `gap-*`; avoid single-row fixed widths that overflow.
+5. **Tabs** — allow wrap or horizontal scroll (`flex flex-wrap` or `overflow-x-auto`) so tab labels are reachable on narrow screens.
+6. **Modals** — full width with safe inset padding (`w-full max-w-*`, outer `p-4`); avoid large fixed side padding that squeezes content on phones.
+7. **Forms / file inputs** — controls are `w-full` / `max-w-full`; no fixed min-widths that force overflow.
+8. **Touch targets** — keep primary buttons and icon actions comfortably tappable; do not shrink action columns below usability on mobile.
+
+## Do not
+
+- Rely on desktop-only multi-column layouts without a mobile stack.
+- Use large fixed widths (`w-[900px]`, heavy `min-w-*`) on page roots.
+- Leave instructive intro paragraphs to “explain” cramped layouts — remove the copy and fix the layout (see `no-instructive-copy.mdc`).

@@ -1,0 +1,150 @@
+<div
+  class="login-page font-nunito text-sm font-normal antialiased"
+  [class.rtl]="locale.isRtl()"
+  [class.ltr]="!locale.isRtl()"
+>
+  <div class="login-card">
+    <div class="login-card__lang">
+      <button
+        type="button"
+        class="rounded-full bg-[#f4f4f4] px-3 py-2 hover:bg-white-light/90 hover:text-primary"
+        (click)="locale.toggle()"
+      >
+        @if (locale.locale() === 'en') {
+          <span i18n="@@jobseeker.login.switchToArabic">العربية</span>
+        } @else {
+          <span i18n="@@jobseeker.login.switchToEnglish">English</span>
+        }
+      </button>
+    </div>
+
+    @if (registerOpen()) {
+      <div class="fixed inset-0 z-[999] overflow-y-auto bg-[black]/80" (click.self)="closeRegister()">
+        <div class="flex items-start justify-center px-4">
+          <div class="panel relative my-8 w-full max-w-lg overflow-hidden rounded-lg border-0 p-0">
+            <app-modal-close extraClasses="absolute top-4 ltr:right-4 rtl:left-4" (close)="closeRegister()" />
+            <div class="flex items-center justify-between bg-[#fbfbfb] px-5 py-3 dark:bg-[#121c2c]">
+              <div class="text-lg font-bold" i18n="@@jobseeker.login.registerAs">Register As</div>
+            </div>
+            <div class="p-5">
+              <p i18n="@@jobseeker.login.chooseRole">Choose your role</p>
+              <div class="mt-2 text-base font-medium text-[#1f2937] dark:text-white-dark/70">
+                <select class="form-select" [value]="registerType()" (change)="onRegisterTypeChange($event)">
+                  <option value="" i18n="@@jobseeker.login.selectRole">Select...</option>
+                  <option value="RegisterFreelancer" i18n="@@jobseeker.login.roleFreelancer">Freelancer</option>
+                  <option value="RegisterJobseeker" i18n="@@jobseeker.login.roleJobseeker">Job seeker</option>
+                  <option value="RegisterSME" i18n="@@jobseeker.login.roleSme">SME</option>
+                  <option value="RegisterOperator" i18n="@@jobseeker.login.roleOperator">Operator</option>
+                </select>
+              </div>
+              <div class="mt-8 flex items-center justify-end">
+                <button
+                  type="button"
+                  class="btn btn-dark"
+                  [disabled]="!registerType()"
+                  (click)="continueRegister()"
+                >
+                  <span i18n="@@jobseeker.common.continue">Continue</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    }
+
+    <div class="mb-8">
+      <h1 class="text-3xl font-extrabold uppercase !leading-snug md:text-[2.375rem]" style="color: #01a9b0" i18n="@@jobseeker.login.signInTitle">
+        Sign In
+      </h1>
+      <p class="text-base font-bold leading-normal text-white-dark" i18n="@@jobseeker.login.subtitle">
+        Enter your email and password to continue.
+      </p>
+    </div>
+
+    @if (useMockLogin) {
+      <div class="mb-6 rounded border border-[#ebedf2] bg-[#f8fafc] p-4">
+        <p class="text-xs text-white-dark" i18n="@@jobseeker.login.mockHint">
+          Mock mode: sign in with email only (password ignored). Demo job seekers use their first English name plus &#64;mock.local (e.g. aisha&#64;mock.local, khalid&#64;mock.local). Role accounts: jobseeker&#64;mock.local, operator&#64;mock.local, admin&#64;mock.local.
+        </p>
+      </div>
+    }
+
+    @if (showNormalLogin()) {
+    <form [formGroup]="form" class="space-y-3" (ngSubmit)="onSubmit($event)">
+      <div>
+        <label for="email" i18n="@@jobseeker.login.email">Email</label>
+        <div class="relative text-white-dark">
+          <input
+            id="email"
+            type="email"
+            formControlName="email"
+            class="form-input placeholder:text-white-dark"
+            i18n-placeholder="@@jobseeker.login.emailPlaceholder"
+            placeholder="Enter email"
+            autocomplete="email"
+          />
+        </div>
+      </div>
+      <div>
+        <label for="password" i18n="@@jobseeker.login.password">Password</label>
+        <div class="relative text-white-dark">
+          <input
+            id="password"
+            type="password"
+            formControlName="password"
+            class="form-input placeholder:text-white-dark"
+            i18n-placeholder="@@jobseeker.login.passwordPlaceholder"
+            placeholder="Enter password"
+            autocomplete="current-password"
+          />
+        </div>
+      </div>
+
+      <div>
+        <label class="flex cursor-pointer items-center">
+          <input type="checkbox" class="form-checkbox bg-white dark:bg-black" formControlName="rememberme" />
+          <span class="text-white-dark" i18n="@@jobseeker.login.rememberMe">Remember me</span>
+        </label>
+      </div>
+
+      <button
+        type="submit"
+        class="btn btn-gradient !mt-6 w-full border-0 uppercase shadow-[0_10px_20px_-10px_rgba(67,97,238,0.44)]"
+        [disabled]="inProgress() || (useMockLogin && mockUsers().length === 0)"
+      >
+        @if (inProgress()) {
+          <span
+            class="inline-block h-5 w-5 animate-spin rounded-full border-2 border-white border-l-transparent ltr:mr-4 rtl:ml-4"
+          ></span>
+        }
+        <span i18n="@@jobseeker.login.signInButton">Sign In</span>
+      </button>
+    </form>
+    }
+
+    @if (showPkiLogin()) {
+    <p class="mb-4 text-base font-bold leading-normal text-white-dark" i18n="@@jobseeker.login.pkiSubtitle">
+      Sign in with your civil ID through the PKI gateway.
+    </p>
+    <button
+      type="button"
+      class="btn btn-gradient !mt-2 w-full border-0 uppercase shadow-[0_10px_20px_-10px_rgba(67,97,238,0.44)]"
+      (click)="continueWithPki()"
+    >
+      <span i18n="@@jobseeker.login.pkiSignIn">PKI Sign In</span>
+    </button>
+    }
+
+    <div class="mt-8 text-center">
+      <span i18n="@@jobseeker.login.noAccount">Don't have an account?</span>
+      <a
+        href="javascript:void(0)"
+        class="text-primary uppercase underline transition hover:text-black"
+        (click)="registerOpen.set(true)"
+      >
+        <span i18n="@@jobseeker.login.registerLink">Register</span>
+      </a>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,7 @@
+{
+  "Data": [
+    { "Id": 1, "Name": "IT & Software", "ArabicName": "تقنية المعلومات والبرمجيات" },
+    { "Id": 2, "Name": "Design & Creative", "ArabicName": "التصميم والإبداع" },
+    { "Id": 3, "Name": "Business", "ArabicName": "الأعمال" }
+  ]
+}

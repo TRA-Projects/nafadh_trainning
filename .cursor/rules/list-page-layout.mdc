@@ -1,0 +1,75 @@
+---
+description: Standard JobseekerModule list-page layout — search-on-change, filter/clear icons, bordered table shell, and pager with current page number
+alwaysApply: true
+---
+
+# List page layout (JobseekerModule)
+
+When creating or substantially refactoring any **browse/list page** (admin or operator tables), match the shared layout used by pages such as **Education certificates** (`admin-education-records-list-page`) and **Diploma marks verification**.
+
+## Required chrome
+
+1. **Page shell** — `rounded-xl border … p-3 sm:p-4 md:p-6` panel (see `mobile-responsive-pages.mdc`).
+2. **Header row** — title on the start side; icon actions on the end:
+   - **Filter** (outline square `h-10 w-10`) opens the advanced-filters drawer; badge when filters are active.
+   - **Clear filters** (compact icon-only clear control) — disabled when no filters are active.
+   - Optional **Add** (green `+` button) only when the page has a create action.
+   - Optional **Back arrow** (`app-back-arrow-button`) when the page is a nested list.
+3. **Desktop search bar** (`hidden md:block`) — bordered inner panel with a **single search text box**.
+4. **No Search submit button** for the primary text query. Typing must **trigger search on input change** (debounce ~300ms), reset `pageIndex` to `0`, and refetch.
+5. **Mobile** — hide the desktop search bar; search lives in the filter drawer (Apply / Clear / Cancel).
+6. **Table shell** — wrap table + pager in `rounded-xl border … md:overflow-hidden`. Desktop table `hidden lg:block`; mobile cards `lg:hidden`.
+7. **Pager** (mandatory — also see `table-pagination.mdc`) — bar under the table with:
+   - `Showing X–Y of Z` on the start side
+   - **Per page** select (`5` / `10` / `15`)
+   - **`<` / current page number (highlighted) / `>`** — not text “Prev” / “Next” buttons
+   - Disable `<` / `>` at boundaries
+
+## Search-on-change pattern
+
+```ts
+onSearchInputChange(value: string): void {
+  this.draftQuery.set((value ?? '').toString());
+  this.scheduleSearch(); // debounce ~300ms → search()
+}
+
+search(): void {
+  this.clearSearchDebounce();
+  this.query.set(this.draftQuery().trim());
+  this.pageIndex.set(0);
+  this.drawerOpen.set(false);
+  void this.loadPaged(); // API call with pageIndex / pageSize / query
+}
+```
+
+## Pager template (canonical)
+
+```html
+<div class="…-pager">
+  <span class="…-pager__summary">{{ pageFooterLabel() }}</span>
+  <div class="…-pager__controls">
+    <label class="…-pager__size">
+      <span i18n="@@jobseeker.jobsList.perPage">Per page</span>
+      <select class="form-select …-pager__select" [value]="pageSize()" (change)="setPageSize(+$any($event.target).value)">
+        @for (s of pageSizeOptions; track s) { <option [value]="s">{{ s }}</option> }
+      </select>
+    </label>
+    <button type="button" class="btn btn-outline-primary btn-sm …-pager__nav"
+            [disabled]="!canPrev()" (click)="prevPage()"
+            aria-label="Prev" i18n-aria-label="@@jobseeker.common.prev">&lt;</button>
+    <span class="…-pager__page …-pager__page--active">{{ safePageIndex() + 1 }}</span>
+    <button type="button" class="btn btn-outline-primary btn-sm …-pager__nav"
+            [disabled]="!canNext()" (click)="nextPage()"
+            aria-label="Next" i18n-aria-label="@@jobseeker.common.next">&gt;</button>
+  </div>
+</div>
+```
+
+## Do not
+
+- Put a primary **Search** button next to the main search box (search runs on change).
+- Use floating “Prev” / “Next” text buttons outside the bordered table/pager shell.
+- Invent a one-off pager or unpaginated `@for` over server lists.
+- Add instructive intro copy under the title (`no-instructive-copy.mdc`).
+
+Reference implementations: `admin-education-records-list-page`, `admin-diploma-marks-verifications-page`, identity-access list pages (`ia-pager`).

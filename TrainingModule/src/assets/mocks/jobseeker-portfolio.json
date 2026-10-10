@@ -1,0 +1,12 @@
+{
+  "Data": [
+    {
+      "Id": 1,
+      "Title": "E-government portal redesign",
+      "Url": "https://example.com/case-study",
+      "Description": "Led front-end architecture for a bilingual citizen portal.",
+      "SkillNames": ["JavaScript", "Angular", "REST APIs"],
+      "TechStack": ["Angular", "Node.js", "PostgreSQL"]
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+---
+description: Phone UI labels must be Phone number / رقم الهاتف — never Mobile / الجوال.
+alwaysApply: true
+---
+
+# Phone number label wording
+
+For user-visible phone/mobile contact labels in JobseekerModule:
+
+- **English:** `Phone number` (not `Mobile`, `Phone`, or `GSM` alone)
+- **Arabic:** `رقم الهاتف` (not `الجوال` or bare `الهاتف`)
+
+Apply to table headers, form labels, and filter placeholders that refer to a person’s or company’s phone. Property names in code (`PhoneNumber`, `mobile`, etc.) may stay as-is.

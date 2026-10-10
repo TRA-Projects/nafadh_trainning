@@ -1,0 +1,50 @@
+---
+description: Job seeker file attachments — one helper with link codes, one download controller
+globs: Bidding_Core/**/Jobseeker*Attachment*.cs,Bidding_API/Controllers/Jobseekers/**/*.cs,JobseekerModule/src/app/**/*.ts
+alwaysApply: false
+---
+
+# Job seeker stored attachments (reuse — do not reinvent)
+
+One helper (`JobseekerStoredAttachmentHelper`) handles file I/O **and** link-table persistence. Pass a **link code** from `JobseekerAttachmentLinkCodes` so the correct table is targeted. One download controller: `JobseekerAttachmentsController`.
+
+## Link codes → tables
+
+| Code (`JobseekerAttachmentLinkCodes`) | Link table | Parent record |
+|--------------------------------------|------------|---------------|
+| `ProfileCv` (`"CV"`) | `ProfileAttachments` | `profileId` only |
+| `EducationRecord` (`"EDUCATION"`) | `JobSeekerEducationAttachments` | `parentRecordId` = `JobSeekerEducations.Id` |
+
+File bytes always go to `Attachments` + disk via `IJobseekerAttachmentStorage`.
+
+Education **rows** (not files): `JobSeekerEducations` via `JobseekerProfileCompletionService`.
+
+## Backend API (helper methods)
+
+```csharp
+JobseekerStoredAttachmentHelper.LoadLinkedAsync(context, storage, linkCode, profileId, parentRecordId?)
+JobseekerStoredAttachmentHelper.UpsertLinkedAsync(context, storage, linkCode, profileId, parentRecordId?, dto, utcNow)
+JobseekerStoredAttachmentHelper.DeleteLinkedAsync(context, storage, linkCode, profileId, parentRecordId?)
+JobseekerStoredAttachmentHelper.IsCallerOwnedAsync(context, linkCode, attachmentId, callerProfileId)
+JobseekerStoredAttachmentHelper.IsCallerOwnedAnyAsync(context, attachmentId, callerProfileId) // download
+```
+
+**New domain:** add a constant in `JobseekerAttachmentLinkCodes`, extend the `switch` in `JobseekerStoredAttachmentHelper.Links.cs`, and add ownership in `IsCallerOwnedAsync`.
+
+## Controllers (do not split per domain)
+
+| Route | Controller |
+|-------|------------|
+| `GET /api/jobseekers/attachments/{id}/download` | `JobseekerAttachmentsController` |
+| Education CRUD | `JobseekerProfileCompletionController` |
+| CV on general info | `JobseekerProfileGeneralController` |
+
+## Save contract
+
+Embed `dataUrl` + metadata in JSON on save. GET returns metadata only (`attachmentId`, `fileName`, `fileType`, `fileSize`). Remove = `Attachment: null` or empty `fileName`.
+
+## Frontend
+
+Use `readProfileRecordAttachment`, `mapStoredAttachmentRef`, `AttachmentDownloadService`, and `<app-job-opportunity-attachment-chips>` — see `file-download-component.mdc`.
+
+See also: `real-api-implementation.mdc`, `api-profile-id-from-token.mdc`.

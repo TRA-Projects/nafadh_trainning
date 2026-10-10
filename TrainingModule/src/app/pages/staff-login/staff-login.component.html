@@ -1,0 +1,145 @@
+<div
+  class="relative overflow-x-hidden font-nunito text-sm font-normal antialiased"
+  [class.rtl]="locale.isRtl()"
+  [class.ltr]="!locale.isRtl()"
+>
+  <div class="main-container min-h-screen text-black dark:text-white-dark">
+    <div
+      class="relative flex min-h-screen items-center justify-center bg-[url(../images/auth/map.png)] bg-cover bg-center bg-no-repeat px-6 py-10 dark:bg-[#060818] sm:px-16"
+    >
+      <img
+        [src]="'/images/auth/coming-soon-object1.png' | assetUrl"
+        alt=""
+        class="pointer-events-none absolute left-0 top-1/2 h-full max-h-[893px] -translate-y-1/2"
+      />
+      <img [src]="'/images/auth/rectangle-2.png' | assetUrl" alt="" class="pointer-events-none absolute left-24 top-0 h-40 md:left-[30%]" />
+      <img [src]="'/images/auth/coming-soon-object3.png' | assetUrl" alt="" class="pointer-events-none absolute right-0 top-0 h-[300px]" />
+      <img [src]="'/images/auth/polygon-2.png' | assetUrl" alt="" class="pointer-events-none absolute bottom-0 end-[28%]" />
+
+      <div
+        class="relative flex w-full max-w-[1502px] flex-col justify-between overflow-hidden rounded-md bg-white/60 backdrop-blur-lg dark:bg-black/50 lg:min-h-[758px] lg:flex-row lg:gap-10 xl:gap-0"
+      >
+        <div
+          class="relative hidden w-full items-center justify-center bg-cover bg-center p-5 lg:inline-flex lg:max-w-[835px] xl:-ms-28"
+          [style.background]="loginPanelBackground"
+          style="background-position: left top; background-size: cover; margin-inline-start: unset !important"
+        ></div>
+
+        <div class="relative z-10 flex w-full flex-col items-center justify-center gap-6 px-4 pb-16 pt-6 sm:px-6 lg:max-w-[667px]">
+          <div class="flex w-full max-w-[440px] items-center justify-end gap-2">
+            <button
+              type="button"
+              class="rounded-full bg-white-light/40 p-2 hover:bg-white-light/90 hover:text-primary dark:bg-dark/40 dark:hover:bg-dark/60"
+              (click)="locale.toggle()"
+            >
+              @if (locale.locale() === 'en') {
+                <span i18n="@@jobseeker.login.switchToArabic">العربية</span>
+              } @else {
+                <span i18n="@@jobseeker.login.switchToEnglish">English</span>
+              }
+            </button>
+          </div>
+
+          <div class="w-full max-w-[440px] lg:mt-16">
+            <div class="mb-10">
+              <h1 class="text-3xl font-extrabold uppercase !leading-snug md:text-4xl" style="color: #01a9b0" i18n="@@jobseeker.staffLogin.title">
+                Staff Sign In
+              </h1>
+            </div>
+
+            @if (!otpStep()) {
+              <form [formGroup]="form" class="space-y-3 dark:text-white" (ngSubmit)="onSubmit($event)">
+                <div>
+                  <label for="staff-email" i18n="@@jobseeker.login.email">Email</label>
+                  <div class="relative text-white-dark">
+                    <input
+                      id="staff-email"
+                      type="email"
+                      formControlName="email"
+                      class="form-input placeholder:text-white-dark"
+                      i18n-placeholder="@@jobseeker.login.emailPlaceholder"
+                      placeholder="Enter email"
+                      autocomplete="username"
+                    />
+                  </div>
+                </div>
+                <div>
+                  <label for="staff-password" i18n="@@jobseeker.login.password">Password</label>
+                  <div class="relative text-white-dark">
+                    <input
+                      id="staff-password"
+                      type="password"
+                      formControlName="password"
+                      class="form-input placeholder:text-white-dark"
+                      i18n-placeholder="@@jobseeker.login.passwordPlaceholder"
+                      placeholder="Enter password"
+                      autocomplete="current-password"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label class="flex cursor-pointer items-center">
+                    <input type="checkbox" class="form-checkbox bg-white dark:bg-black" formControlName="rememberme" />
+                    <span class="text-white-dark" i18n="@@jobseeker.login.rememberMe">Remember me</span>
+                  </label>
+                </div>
+
+                <button
+                  type="submit"
+                  class="btn btn-gradient !mt-6 w-full border-0 uppercase shadow-[0_10px_20px_-10px_rgba(67,97,238,0.44)]"
+                  [disabled]="inProgress()"
+                >
+                  @if (inProgress()) {
+                    <span
+                      class="inline-block h-5 w-5 animate-spin rounded-full border-2 border-white border-l-transparent ltr:mr-4 rtl:ml-4"
+                    ></span>
+                  }
+                  <span i18n="@@jobseeker.login.signInButton">Sign In</span>
+                </button>
+              </form>
+            } @else {
+              <form [formGroup]="otpForm" class="space-y-3 dark:text-white" (ngSubmit)="onVerifyOtp($event)">
+                <p class="text-base font-bold leading-normal text-white-dark" i18n="@@jobseeker.staffLogin.otpSubtitle">
+                  Enter the verification code sent to your mobile.
+                </p>
+                <div>
+                  <label for="staff-otp" i18n="@@jobseeker.staffLogin.otp">Verification code</label>
+                  <div class="relative text-white-dark">
+                    <input
+                      id="staff-otp"
+                      type="text"
+                      inputmode="numeric"
+                      formControlName="otp"
+                      class="form-input placeholder:text-white-dark"
+                      i18n-placeholder="@@jobseeker.staffLogin.otpPlaceholder"
+                      placeholder="Enter code"
+                      autocomplete="one-time-code"
+                    />
+                  </div>
+                </div>
+
+                <button
+                  type="submit"
+                  class="btn btn-gradient !mt-6 w-full border-0 uppercase shadow-[0_10px_20px_-10px_rgba(67,97,238,0.44)]"
+                  [disabled]="inProgress()"
+                >
+                  @if (inProgress()) {
+                    <span
+                      class="inline-block h-5 w-5 animate-spin rounded-full border-2 border-white border-l-transparent ltr:mr-4 rtl:ml-4"
+                    ></span>
+                  }
+                  <span i18n="@@jobseeker.staffLogin.verifyButton">Verify</span>
+                </button>
+
+                <button type="button" class="btn btn-outline-primary !mt-3 w-full" [disabled]="inProgress()" (click)="backToPassword()">
+                  <span i18n="@@jobseeker.common.back">Back</span>
+                </button>
+              </form>
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

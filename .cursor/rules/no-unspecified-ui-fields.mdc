@@ -1,0 +1,17 @@
+---
+description: Never add UI fields/columns/items unless the user explicitly asked for them.
+alwaysApply: true
+---
+
+# No unspecified UI or copy
+
+When implementing or refactoring screens:
+
+1. **Only add what the user asked for** — fields, columns, badges, sections, labels, menu items, mock rows, and status chips must match an **explicit** user instruction. Do not “improve” layouts by adding related data the user did not mention.
+2. **Never invent columns or form fields** — if the user asks to add email, add **only** email (not service, class, status, or other “useful” extras). Pre-existing columns stay unless the user asks to remove them.
+3. **Do not infer extra overview rows** — e.g. do not add candidate employment status, PEP badges, or secondary statuses on offer/contract views unless requested.
+4. **Match existing parity targets literally** — if the user says “match offer submission layout,” copy only the fields that exist on the reference screen unless they list additions.
+5. **When unsure, ask** — prefer a short clarification over adding speculative UI.
+6. **No guiding intro paragraphs** — see `no-instructive-copy.mdc`. Do not add instructional helper copy above forms, tabs, or embedded lists unless the user explicitly asks for that text.
+
+If the user reports an unwanted field, remove it rather than hiding it behind a flag unless they asked for conditional display.

@@ -1,0 +1,261 @@
+<div
+  class="relative overflow-x-hidden font-nunito text-sm font-normal antialiased"
+  [class.rtl]="locale.isRtl()"
+  [class.ltr]="!locale.isRtl()"
+>
+  <div class="main-container min-h-screen text-black dark:text-white-dark">
+    <div
+      class="relative flex min-h-screen items-center justify-center bg-[url(../images/auth/map.png)] bg-cover bg-center bg-no-repeat px-6 py-10 dark:bg-[#060818] sm:px-16"
+    >
+      <div
+        class="relative flex w-full max-w-[1502px] flex-col justify-between overflow-x-hidden overflow-y-visible rounded-md bg-white/60 backdrop-blur-lg dark:bg-black/50 lg:min-h-[758px] lg:flex-row lg:gap-10 xl:gap-0"
+      >
+        <div
+          class="relative hidden w-full items-center justify-center bg-cover bg-center p-5 lg:inline-flex lg:max-w-[835px] xl:-ms-28"
+          style="background: url('/images/auth/login.svg'); background-position: left top; background-size: cover; margin-inline-start: unset !important"
+        ></div>
+
+        <div class="relative z-10 flex w-full flex-col items-center justify-center gap-6 px-4 pb-16 pt-6 sm:px-6 lg:max-w-[667px]">
+          <div class="flex w-full max-w-[520px] items-center justify-end gap-2">
+            <button
+              type="button"
+              class="rounded-full bg-white-light/40 p-2 hover:bg-white-light/90 hover:text-primary dark:bg-dark/40 dark:hover:bg-dark/60"
+              (click)="locale.toggle()"
+            >
+              @if (locale.locale() === 'en') {
+                <span i18n="@@jobseeker.login.switchToArabic">العربية</span>
+              } @else {
+                <span i18n="@@jobseeker.login.switchToEnglish">English</span>
+              }
+            </button>
+          </div>
+
+          <div class="w-full max-w-[520px]">
+            <div class="mb-8">
+              <h1 class="text-3xl font-extrabold uppercase !leading-snug md:text-4xl" style="color: #00338d" i18n="@@jobseeker.registration.title">
+                Job seeker registration
+              </h1>
+              <p class="text-base font-bold leading-normal text-white-dark" i18n="@@jobseeker.registration.subtitle">
+                Create your account. You will complete your full profile next.
+              </p>
+            </div>
+
+            @if (submitError()) {
+              <div class="mb-4 rounded bg-danger-light p-3 text-danger dark:bg-danger-dark-light">{{ submitError() }}</div>
+            }
+
+            @if (otpModalOpen()) {
+              <div class="fixed inset-0 z-[999] overflow-y-auto bg-slate-900/70 backdrop-blur-sm" (click.self)="closeOtpModal()">
+                <div class="flex min-h-full items-center justify-center px-4 py-6">
+                  <div class="relative w-full max-w-md overflow-hidden rounded-2xl bg-white shadow-2xl ring-1 ring-black/10 dark:bg-[#0e1726] dark:ring-white/10">
+                    <!-- Header strip with brand color so the modal pops against the dim overlay -->
+                    <div class="relative px-6 pb-4 pt-6" style="background: linear-gradient(135deg, #00338d 0%, #0045ff 100%); color: #fff;">
+                      <app-modal-close extraClasses="absolute top-3 ltr:right-3 rtl:left-3 !text-white" (close)="closeOtpModal()" />
+                      <h3 class="text-xl font-extrabold uppercase !leading-snug ltr:pr-10 rtl:pl-10" i18n="@@jobseeker.registration.otpTitle">
+                        OTP Verification
+                      </h3>
+                      <p class="mt-1 text-sm leading-normal text-white/90" i18n="@@jobseeker.registration.otpHint">
+                        Enter the OTP sent to your mobile number.
+                      </p>
+                    </div>
+
+                    <div class="px-6 py-5">
+                      @if (showOtpPreview()) {
+                        <div class="rounded-lg border border-primary/30 bg-primary/5 p-3 dark:bg-primary/10">
+                          <div class="text-xs font-semibold uppercase text-primary" i18n="@@jobseeker.registration.otpMockLabel">Mock OTP:</div>
+                          <div class="mt-1 select-all font-mono text-2xl font-extrabold tracking-[0.4em]" style="color: #00338d">
+                            {{ otpPreviewCode() }}
+                          </div>
+                        </div>
+                      }
+
+                      <div class="mt-3 flex items-center justify-between text-sm font-semibold">
+                        <span class="text-white-dark" i18n="@@jobseeker.registration.otpExpiresIn">Expires in</span>
+                        <span class="font-mono text-base" style="color: #00338d">{{ otpTimerText() }}</span>
+                      </div>
+
+                      <div class="mt-4">
+                        <label for="otp-input" class="required-label is-required" i18n="@@jobseeker.registration.otpCode">OTP code</label>
+                        <input
+                          id="otp-input"
+                          type="text"
+                          maxlength="6"
+                          inputmode="numeric"
+                          autocomplete="one-time-code"
+                          class="form-input text-center text-xl font-bold tracking-[0.5em]"
+                          [value]="otpInput()"
+                          (input)="otpInput.set($any($event.target).value)"
+                        />
+                      </div>
+
+                      @if (otpError()) {
+                        <div class="mt-3 rounded bg-danger-light p-2 text-sm text-danger dark:bg-danger-dark-light">{{ otpError() }}</div>
+                      }
+
+                      <div class="mt-5 flex items-center justify-between gap-3">
+                        <button
+                          type="button"
+                          class="text-sm font-semibold uppercase text-primary underline-offset-2 transition hover:underline disabled:opacity-50"
+                          [disabled]="otpSubmitting()"
+                          (click)="resendOtp()"
+                        >
+                          <span i18n="@@jobseeker.registration.otpResend">Re-Send OTP</span>
+                        </button>
+                        <button
+                          type="button"
+                          class="btn btn-gradient border-0 px-5 shadow-[0_10px_20px_-10px_rgba(67,97,238,0.6)]"
+                          [disabled]="otpSubmitting()"
+                          (click)="confirmOtpAndRegister()"
+                        >
+                          @if (otpSubmitting()) {
+                            <span class="inline-block h-4 w-4 animate-spin rounded-full border-2 border-white border-l-transparent ltr:mr-2 rtl:ml-2"></span>
+                          }
+                          <span i18n="@@jobseeker.registration.otpVerifyButton">Verify & Register</span>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            }
+
+            @if (loaded()) {
+              <form class="space-y-4 dark:text-white" [formGroup]="form" (ngSubmit)="submit()">
+                <!-- Row 1: civil id -->
+                <div>
+                  <label
+                    for="reg-civil-id"
+                    class="required-label"
+                    [class.is-required]="isRequired('civilId')"
+                    i18n="@@jobseeker.registration.civilId"
+                    >Civil ID</label
+                  >
+                  <input
+                    id="reg-civil-id"
+                    type="text"
+                    class="form-input"
+                    formControlName="civilId"
+                    [class.form-input-locked]="!!pkiTempToken()"
+                    [readonly]="!!pkiTempToken()"
+                    (blur)="lookupCivilId()"
+                  />
+                  @if (civilLookupLoading()) {
+                    <p class="mt-1 text-xs text-white-dark" i18n="@@jobseeker.registration.civilLookupLoading">
+                      Checking civil ID…
+                    </p>
+                  }
+                  @if (!civilLookupLoading() && civilLookupMessage()) {
+                    <p
+                      class="mt-1 text-xs"
+                      [class.text-danger]="!civilLookupOk()"
+                      [class.text-success]="civilLookupOk()"
+                    >
+                      {{ civilLookupMessage() }}
+                    </p>
+                  }
+                </div>
+
+                <!-- Row 2: email (login identifier) -->
+                <div>
+                  <label for="reg-email" class="required-label" [class.is-required]="isRequired('email')" i18n="@@jobseeker.registration.email"
+                    >Email address</label
+                  >
+                  <input id="reg-email" type="email" class="form-input" formControlName="email" autocomplete="email" />
+                  @if (form.controls.email.invalid && form.controls.email.touched) {
+                    <span class="text-danger text-sm">{{ form.controls.email | validationMessage }}</span>
+                  }
+                </div>
+
+                <!-- Row 3: name in English + Arabic -->
+                <div class="grid gap-4 sm:grid-cols-2">
+                  <div>
+                    <label
+                      for="reg-name-en"
+                      class="required-label"
+                      [class.is-required]="isRequired('name_en')"
+                      i18n="@@jobseeker.registration.nameEnglish"
+                      >Name (English)</label
+                    >
+                    <input
+                      id="reg-name-en"
+                      type="text"
+                      class="form-input"
+                      [class.form-input-locked]="civilDataLocked()"
+                      formControlName="name_en"
+                      [readonly]="civilDataLocked()"
+                    />
+                    @if (form.controls.name_en.invalid && form.controls.name_en.touched) {
+                      <span class="text-danger text-sm">{{ form.controls.name_en | validationMessage }}</span>
+                    }
+                  </div>
+                  <div>
+                    <label
+                      for="reg-name-ar"
+                      class="required-label"
+                      [class.is-required]="isRequired('name_ar')"
+                      i18n="@@jobseeker.registration.nameArabic"
+                      >Name (Arabic)</label
+                    >
+                    <input
+                      id="reg-name-ar"
+                      type="text"
+                      class="form-input"
+                      [class.form-input-locked]="civilDataLocked()"
+                      formControlName="name_ar"
+                      [readonly]="civilDataLocked()"
+                    />
+                    @if (form.controls.name_ar.invalid && form.controls.name_ar.touched) {
+                      <span class="text-danger text-sm">{{ form.controls.name_ar | validationMessage }}</span>
+                    }
+                  </div>
+                </div>
+
+                <!-- Row 5: phone -->
+                <div>
+                  <label
+                    for="reg-mobile"
+                    class="required-label"
+                    [class.is-required]="isRequired('mobileNumber')"
+                    i18n="@@jobseeker.registration.mobileNumber"
+                    >Mobile no</label
+                  >
+                  <input id="reg-mobile" type="text" class="form-input" formControlName="mobileNumber" autocomplete="tel" />
+                  @if (form.controls.mobileNumber.invalid && form.controls.mobileNumber.touched) {
+                    <span class="text-danger text-sm">{{ form.controls.mobileNumber | validationMessage }}</span>
+                  }
+                </div>
+
+                <!-- Row 6: submit -->
+                <button
+                  type="submit"
+                  class="btn btn-gradient w-full border-0 uppercase shadow-[0_10px_20px_-10px_rgba(67,97,238,0.44)]"
+                  [disabled]="submitting()"
+                  i18n="@@jobseeker.registration.submit"
+                >
+                  @if (submitting()) {
+                    <span class="inline-block h-5 w-5 animate-spin rounded-full border-2 border-white border-l-transparent ltr:mr-3 rtl:ml-3"></span>
+                  }
+                  Register
+                </button>
+
+                <div class="mt-6 text-center dark:text-white">
+                  <span i18n="@@jobseeker.registration.haveAccount">Already have an account?</span>
+                  <a routerLink="/login" class="text-primary uppercase underline transition hover:text-black dark:hover:text-white">
+                    <span i18n="@@jobseeker.registration.backToSignIn">Back to sign in</span>
+                  </a>
+                </div>
+              </form>
+            } @else {
+              <div class="flex justify-center py-10">
+                <span
+                  class="inline-block h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent"
+                  aria-hidden="true"
+                ></span>
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

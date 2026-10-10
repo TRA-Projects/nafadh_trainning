@@ -1,0 +1,88 @@
+<div class="rounded-xl border border-[#ebedf2] bg-white p-3 shadow-sm dark:border-[#191e3a] dark:bg-[#0e1726] sm:p-4 md:p-6">
+  <div class="flex flex-wrap items-center justify-between gap-3">
+    <h1 class="min-w-0 text-xl font-bold text-black dark:text-white-light sm:text-2xl" i18n="@@jobseeker.notificationsInbox.title">
+      My notifications
+    </h1>
+    <div class="flex flex-wrap items-center gap-3">
+      <label class="inline-flex cursor-pointer items-center gap-2 text-sm">
+        <input type="checkbox" class="form-checkbox" [checked]="unreadOnly()" (change)="setUnreadOnly($any($event.target).checked)" />
+        <span i18n="@@jobseeker.notificationsInbox.unreadOnly">Unread only</span>
+      </label>
+      <button
+        type="button"
+        class="btn btn-outline-primary btn-sm"
+        [disabled]="unreadCount() === 0"
+        (click)="markAllRead()"
+        i18n="@@jobseeker.notificationsInbox.markAllRead"
+      >
+        Mark all as read
+      </button>
+    </div>
+  </div>
+
+  <div class="mt-4 rounded-xl border border-[#ebedf2] bg-white dark:border-[#191e3a] dark:bg-[#0e1726] md:overflow-hidden">
+    <ul>
+      @for (n of rows(); track n.Id; let i = $index) {
+        <li class="mn-item" [class.mn-item--unread]="!n.IsRead">
+          <span class="mn-item__index">{{ safePageIndex() * pageSize() + i + 1 }}</span>
+          <div class="min-w-0 flex-1">
+            <div class="flex flex-wrap items-center gap-2">
+              <span class="min-w-0 break-words text-base" [class.font-bold]="!n.IsRead" [class.font-semibold]="n.IsRead">{{ n.Title }}</span>
+              @if (!n.IsRead) {
+                <span
+                  class="inline-flex items-center rounded border border-primary/30 bg-primary/10 px-2 py-0.5 text-xs font-semibold text-primary"
+                  i18n="@@jobseeker.notificationsInbox.unread"
+                  >Unread</span
+                >
+              }
+            </div>
+            <p class="mt-1 whitespace-pre-line break-words text-sm text-white-dark">{{ n.Body }}</p>
+            <div class="mt-2 text-xs text-white-dark">{{ formatDate(n.CreatedAtUtc) }}</div>
+          </div>
+          @if (!n.IsRead) {
+            <button type="button" class="btn btn-outline-primary btn-sm shrink-0" (click)="markRead(n)" i18n="@@jobseeker.notificationsInbox.markRead">
+              Mark as read
+            </button>
+          }
+        </li>
+      } @empty {
+        <li class="py-8 text-center text-sm text-white-dark" i18n="@@jobseeker.notificationsInbox.empty">No notifications</li>
+      }
+    </ul>
+
+    <div class="mn-pager">
+      <span class="mn-pager__summary">{{ pageFooterLabel() }}</span>
+      <div class="mn-pager__controls">
+        <label class="mn-pager__size">
+          <span i18n="@@jobseeker.jobsList.perPage">Per page</span>
+          <select class="form-select mn-pager__select" [value]="pageSize()" (change)="setPageSize(+$any($event.target).value)">
+            @for (s of pageSizeOptions; track s) {
+              <option [value]="s">{{ s }}</option>
+            }
+          </select>
+        </label>
+        <button
+          type="button"
+          class="btn btn-outline-primary btn-sm mn-pager__nav"
+          [disabled]="!canPrev()"
+          (click)="prevPage()"
+          aria-label="Prev"
+          i18n-aria-label="@@jobseeker.common.prev"
+        >
+          &lt;
+        </button>
+        <span class="mn-pager__page mn-pager__page--active">{{ safePageIndex() + 1 }}</span>
+        <button
+          type="button"
+          class="btn btn-outline-primary btn-sm mn-pager__nav"
+          [disabled]="!canNext()"
+          (click)="nextPage()"
+          aria-label="Next"
+          i18n-aria-label="@@jobseeker.common.next"
+        >
+          &gt;
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

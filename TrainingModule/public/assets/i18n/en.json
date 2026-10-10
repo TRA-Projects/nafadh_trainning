@@ -1,0 +1,196 @@
+{
+  "locale": {
+    "toggleToArabic": "عربي",
+    "toggleToEnglish": "EN"
+  },
+  "uiAsync": {
+    "pleaseWait": "Please wait…",
+    "done": "Done.",
+    "genericError": "Something went wrong."
+  },
+  "login": {
+    "title": "Sign in",
+    "subtitle": "Enter your email and password to sign in",
+    "email": "Email",
+    "password": "Password",
+    "emailPlaceholder": "email@example.com",
+    "forgotPassword": "Forgot password?",
+    "submit": "Sign in",
+    "noAccount": "Don't have an account?",
+    "register": "Register"
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "jobs": "Jobs",
+    "findJobs": "Find jobs",
+    "savedJobs": "Saved jobs",
+    "profile": "Profile",
+    "completeProfile": "Complete profile",
+    "myProfile": "My profile",
+    "myApplications": "My applications",
+    "appliedJobs": "Applied jobs",
+    "history": "History",
+    "messages": "Messages",
+    "settings": "Settings",
+    "support": "Support"
+  },
+  "page": {
+    "dashboard": "Dashboard",
+    "findJobs": "Find jobs",
+    "savedJobs": "Saved jobs",
+    "myProfile": "My profile",
+    "appliedJobs": "Applied jobs",
+    "applicationHistory": "Application history",
+    "messages": "Messages",
+    "settings": "Settings",
+    "support": "Support"
+  },
+  "header": {
+    "signOut": "Sign out",
+    "userFallback": "User"
+  },
+  "footer": {
+    "line": "© {{year}}. NAFADH Jobseeker"
+  },
+  "a11y": {
+    "toggleSidebar": "Toggle sidebar",
+    "openMenu": "Open menu",
+    "profileAvatar": "Profile"
+  },
+  "brand": {
+    "nafadh": "NAFADH"
+  },
+  "profileCompletion": {
+    "breadcrumb": {
+      "users": "Users",
+      "accountSettings": "Account settings"
+    },
+    "shell": {
+      "title": "Profile completion",
+      "heading": "Profile completion",
+      "subheading": "Please complete your profile to unlock all features"
+    },
+    "general": {
+      "documentTitle": "General information — profile",
+      "sectionTitle": "General information"
+    },
+    "portfolio": {
+      "documentTitle": "Portfolio — profile",
+      "sectionTitle": "Portfolio details",
+      "add": "Add",
+      "addPortfolio": "Add portfolio",
+      "type": "Portfolio type",
+      "titleField": "Title",
+      "enterTitle": "Enter title",
+      "sector": "Sector",
+      "participationLabel": "Participation",
+      "cost": "Cost",
+      "duration": "Duration",
+      "description": "Description",
+      "enterCost": "Enter cost",
+      "enterDuration": "Enter duration",
+      "cancel": "Cancel",
+      "saveItem": "Add",
+      "updateItem": "Save changes",
+      "close": "Close",
+      "loading": "Loading…",
+      "deleteConfirm": "Delete this portfolio item?",
+      "viewPortfolio": "View portfolio",
+      "editPortfolio": "Edit portfolio",
+      "actions": {
+        "view": "View",
+        "edit": "Edit",
+        "delete": "Delete"
+      },
+      "empty": "No portfolio items yet. Use Add to create one (demo only, not saved to server).",
+      "remove": "Remove",
+      "col": {
+        "sn": "S.No",
+        "title": "Title",
+        "type": "Type",
+        "sector": "Sector",
+        "participation": "Participation",
+        "cost": "Cost",
+        "duration": "Duration",
+        "description": "Description",
+        "actions": "Actions"
+      },
+      "types": {
+        "project": "Project",
+        "service": "Service",
+        "caseStudy": "Case study"
+      },
+      "sectors": {
+        "government": "Government",
+        "private": "Private",
+        "personal": "Personal",
+        "other": "Other"
+      },
+      "participation": {
+        "partial": "Partial",
+        "full": "Full",
+        "other": "Other"
+      }
+    },
+    "upload": "Upload",
+    "revert": "Revert",
+    "fullName": "Full name",
+    "civilId": "Civil ID",
+    "phone": "Phone",
+    "email": "Email",
+    "address": "Address",
+    "website": "Website",
+    "enterUrl": "Enter URL",
+    "biography": "Biography",
+    "servicesOffered": "Work scope",
+    "social": "Social",
+    "choose": "Choose...",
+    "saveAndContinue": "Save and continue",
+    "back": "Back",
+    "emptyField": "—",
+    "services": {
+      "webDesign": "Web design",
+      "marketing": "Marketing",
+      "printing": "Printing"
+    },
+    "cities": {
+      "muscat": "Muscat",
+      "salalah": "Salalah",
+      "sohar": "Sohar"
+    },
+    "steps": {
+      "general": "General",
+      "portfolio": "Portfolio",
+      "education": "Education",
+      "experience": "Experience",
+      "skills": "Skills",
+      "certificates": "Certificates",
+      "review": "Review"
+    },
+    "education": {
+      "documentTitle": "Education — profile",
+      "sectionTitle": "Education details",
+      "mockHint": "Education history (schools, degrees, dates) will be added here. Mock step — no server save yet."
+    },
+    "experience": {
+      "documentTitle": "Experience — profile",
+      "sectionTitle": "Professional details",
+      "mockHint": "Work experience and employment history will be added here. Matches Freelancer “Professional details”. Mock only."
+    },
+    "skills": {
+      "documentTitle": "Skills — profile",
+      "sectionTitle": "Skills",
+      "mockHint": "Skills and competencies will be added here. Mock step — no API yet."
+    },
+    "certificates": {
+      "documentTitle": "Certificates — profile",
+      "sectionTitle": "Certifications",
+      "mockHint": "Certificates and licenses will be added here. Matches Freelancer certification step. Mock only."
+    },
+    "review": {
+      "documentTitle": "Profile review",
+      "sectionTitle": "Review profile",
+      "mockHint": "Summary and review before finishing (like Freelancer ProfileDetails). “Save and continue” goes to the dashboard."
+    }
+  }
+}

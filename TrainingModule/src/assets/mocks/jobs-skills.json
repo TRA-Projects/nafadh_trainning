@@ -1,0 +1,8 @@
+{
+  "Data": [
+    { "Id": 10, "NameEn": "Angular", "NameAr": "Angular", "Name": "Angular" },
+    { "Id": 11, "NameEn": "TypeScript", "NameAr": "TypeScript", "Name": "TypeScript" },
+    { "Id": 12, "NameEn": "Node.js", "NameAr": "Node.js", "Name": "Node.js" },
+    { "Id": 13, "NameEn": "UI/UX", "NameAr": "واجهة المستخدم / تجربة المستخدم", "Name": "UI/UX" }
+  ]
+}

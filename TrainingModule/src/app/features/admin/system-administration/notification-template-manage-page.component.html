@@ -1,0 +1,289 @@
+<div class="irf-page">
+  <div class="irf-page__header">
+    <app-back-arrow-button
+      class="shrink-0"
+      [to]="backToList"
+      [iconOnly]="true"
+      [ariaLabel]="backToListAria"
+    />
+    <h2 class="irf-page__title">{{ pageTitle() }}</h2>
+  </div>
+
+  <div class="irf-card mt-6">
+    <div class="irf-banner bg-navigator">
+      <span class="irf-banner__icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+          <path d="M4 5h16a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H8l-4 3V6a1 1 0 0 1 1-1Z" stroke-linejoin="round" />
+          <path d="M8 10h8M8 13h5" stroke-linecap="round" />
+        </svg>
+      </span>
+      <span class="irf-banner__title">{{ pageBannerTitle }}</span>
+    </div>
+
+    <div class="irf-card__body">
+      <form [formGroup]="form" (ngSubmit)="save()">
+        <app-form-page-tabs [tabs]="formTabs" [activeId]="activeTab()" (tabSelect)="setTab($any($event))" />
+
+        @if (activeTab() === 'main') {
+          <!-- General / main details — same field layout as job posting basic tab -->
+          <div class="space-y-4">
+            <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+              <div>
+                <label class="mb-1 block" for="actionCode" i18n="@@jobseeker.admin.notificationTemplates.colActionCode">
+                  Action code
+                </label>
+                <input
+                  id="actionCode"
+                  class="form-input cursor-not-allowed bg-[#f7f7f7] font-mono dark:bg-[#1b2e4b]"
+                  [value]="actionCode()"
+                  disabled
+                  aria-disabled="true"
+                />
+              </div>
+
+              <div class="hidden md:block" aria-hidden="true"></div>
+
+              <div>
+                <label class="mb-1 block" for="labelEn">
+                  <span i18n="@@jobseeker.admin.notificationTemplates.labelEn">Label (EN)</span>
+                  @if (isRequired('LabelEn')) {
+                    <span class="text-danger">*</span>
+                  }
+                </label>
+                <input id="labelEn" class="form-input" formControlName="LabelEn" />
+                @if (form.controls.LabelEn.invalid && form.controls.LabelEn.touched) {
+                  <span class="text-danger text-sm">{{ form.controls.LabelEn | validationMessage }}</span>
+                }
+              </div>
+
+              <div>
+                <label class="mb-1 block" for="labelAr">
+                  <span i18n="@@jobseeker.admin.notificationTemplates.labelAr">Label (AR)</span>
+                  @if (isRequired('LabelAr')) {
+                    <span class="text-danger">*</span>
+                  }
+                </label>
+                <input id="labelAr" class="form-input" dir="rtl" formControlName="LabelAr" />
+                @if (form.controls.LabelAr.invalid && form.controls.LabelAr.touched) {
+                  <span class="text-danger text-sm">{{ form.controls.LabelAr | validationMessage }}</span>
+                }
+              </div>
+            </div>
+
+            <div class="my-2 border-t border-white-light dark:border-white-light/10"></div>
+
+            <div>
+              <div class="mb-2 text-sm font-semibold" i18n="@@jobseeker.admin.notificationTemplates.statusLabel">Status</div>
+              <div class="flex flex-wrap gap-4">
+                <label class="inline-flex items-center gap-2 text-sm">
+                  <input type="checkbox" class="form-checkbox" formControlName="IsActive" />
+                  <span i18n="@@jobseeker.admin.notificationTemplates.active">Active</span>
+                  <span class="text-danger" aria-hidden="true">*</span>
+                </label>
+                <label class="inline-flex items-center gap-2 text-sm">
+                  <input type="checkbox" class="form-checkbox" formControlName="EmailEnabled" />
+                  <span i18n="@@jobseeker.admin.notificationTemplates.emailEnabled">Email enabled</span>
+                  <span class="text-danger" aria-hidden="true">*</span>
+                </label>
+                <label class="inline-flex items-center gap-2 text-sm">
+                  <input type="checkbox" class="form-checkbox" formControlName="SmsEnabled" />
+                  <span i18n="@@jobseeker.admin.notificationTemplates.smsEnabled">SMS enabled</span>
+                  <span class="text-danger" aria-hidden="true">*</span>
+                </label>
+              </div>
+            </div>
+          </div>
+        }
+
+        @if (activeTab() === 'ar') {
+          <div class="space-y-4">
+            @if (placeholders().length) {
+              <div>
+                <div class="mb-2 text-sm font-bold text-black dark:text-white-light" i18n="@@jobseeker.admin.notificationTemplates.availableVariables">
+                  Available variables
+                </div>
+                <div class="flex flex-wrap gap-2">
+                  @for (p of placeholders(); track p.Token) {
+                    <button type="button" class="btn btn-outline-primary btn-sm" (click)="insertPlaceholder(p.Token)">
+                      {{ '{' + p.Token + '}' }}
+                    </button>
+                  }
+                </div>
+              </div>
+            }
+
+            <div class="grid grid-cols-1 gap-4 lg:grid-cols-3">
+              <div class="space-y-4 lg:col-span-2">
+                <div class="text-sm font-bold text-black dark:text-white-light" i18n="@@jobseeker.admin.notificationTemplates.sectionEmail">
+                  Email
+                </div>
+                <div>
+                  <label class="mb-1 block" for="emailSubjectAr">
+                    <span i18n="@@jobseeker.admin.notificationTemplates.emailSubject">Subject</span>
+                    @if (isRequired('EmailSubjectAr')) {
+                      <span class="text-danger">*</span>
+                    }
+                  </label>
+                  <input
+                    id="emailSubjectAr"
+                    class="form-input"
+                    dir="rtl"
+                    formControlName="EmailSubjectAr"
+                    (focus)="setFocusedField('EmailSubjectAr')"
+                  />
+                </div>
+                <div>
+                  <label class="mb-1 block">
+                    <span i18n="@@jobseeker.admin.notificationTemplates.emailBody">Body</span>
+                    @if (isRequired('EmailBodyAr')) {
+                      <span class="text-danger">*</span>
+                    }
+                  </label>
+                  <app-html-email-editor
+                    #emailBodyArEditor
+                    class="block"
+                    formControlName="EmailBodyAr"
+                    dir="rtl"
+                    (focusin)="setFocusedField('EmailBodyAr')"
+                  />
+                </div>
+              </div>
+
+              <div class="space-y-4 lg:col-span-1">
+                <div class="text-sm font-bold text-black dark:text-white-light" i18n="@@jobseeker.admin.notificationTemplates.sectionSms">
+                  SMS
+                </div>
+                <div>
+                  <label class="mb-1 block">
+                    <span i18n="@@jobseeker.admin.notificationTemplates.smsBody">Message</span>
+                    @if (isRequired('SmsBodyAr')) {
+                      <span class="text-danger">*</span>
+                    }
+                  </label>
+                  <textarea
+                    class="form-textarea min-h-[220px] w-full"
+                    rows="8"
+                    dir="rtl"
+                    formControlName="SmsBodyAr"
+                    (focus)="setFocusedField('SmsBodyAr')"
+                  ></textarea>
+                  <p class="mt-1 text-sm text-white-dark">{{ smsArCount() }} / 500</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        }
+
+        @if (activeTab() === 'en') {
+          <div class="space-y-4">
+            @if (placeholders().length) {
+              <div>
+                <div class="mb-2 text-sm font-bold text-black dark:text-white-light" i18n="@@jobseeker.admin.notificationTemplates.availableVariables">
+                  Available variables
+                </div>
+                <div class="flex flex-wrap gap-2">
+                  @for (p of placeholders(); track p.Token) {
+                    <button type="button" class="btn btn-outline-primary btn-sm" (click)="insertPlaceholder(p.Token)">
+                      {{ '{' + p.Token + '}' }}
+                    </button>
+                  }
+                </div>
+              </div>
+            }
+
+            <div class="grid grid-cols-1 gap-4 lg:grid-cols-3">
+              <div class="space-y-4 lg:col-span-2">
+                <div class="text-sm font-bold text-black dark:text-white-light" i18n="@@jobseeker.admin.notificationTemplates.sectionEmail">
+                  Email
+                </div>
+                <div>
+                  <label class="mb-1 block" for="emailSubjectEn">
+                    <span i18n="@@jobseeker.admin.notificationTemplates.emailSubject">Subject</span>
+                    @if (isRequired('EmailSubjectEn')) {
+                      <span class="text-danger">*</span>
+                    }
+                  </label>
+                  <input
+                    id="emailSubjectEn"
+                    class="form-input"
+                    formControlName="EmailSubjectEn"
+                    (focus)="setFocusedField('EmailSubjectEn')"
+                  />
+                </div>
+                <div>
+                  <label class="mb-1 block">
+                    <span i18n="@@jobseeker.admin.notificationTemplates.emailBody">Body</span>
+                    @if (isRequired('EmailBodyEn')) {
+                      <span class="text-danger">*</span>
+                    }
+                  </label>
+                  <app-html-email-editor
+                    #emailBodyEnEditor
+                    class="block"
+                    formControlName="EmailBodyEn"
+                    dir="ltr"
+                    (focusin)="setFocusedField('EmailBodyEn')"
+                  />
+                </div>
+              </div>
+
+              <div class="space-y-4 lg:col-span-1">
+                <div class="text-sm font-bold text-black dark:text-white-light" i18n="@@jobseeker.admin.notificationTemplates.sectionSms">
+                  SMS
+                </div>
+                <div>
+                  <label class="mb-1 block">
+                    <span i18n="@@jobseeker.admin.notificationTemplates.smsBody">Message</span>
+                    @if (isRequired('SmsBodyEn')) {
+                      <span class="text-danger">*</span>
+                    }
+                  </label>
+                  <textarea
+                    class="form-textarea min-h-[220px] w-full"
+                    rows="8"
+                    formControlName="SmsBodyEn"
+                    (focus)="setFocusedField('SmsBodyEn')"
+                  ></textarea>
+                  <p class="mt-1 text-sm text-white-dark">{{ smsEnCount() }} / 500</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        }
+
+        <div class="irf-actions">
+          <button type="button" class="btn btn-outline-primary" (click)="openPreview()" i18n="@@jobseeker.admin.notificationTemplates.preview">
+            Preview
+          </button>
+          <button type="submit" class="btn btn-primary" i18n="@@jobseeker.common.save">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+@if (previewOpen()) {
+  <div class="fixed inset-0 z-[999] flex items-center justify-center bg-black/50 p-4">
+    <div class="panel max-h-[90vh] w-full max-w-3xl overflow-y-auto p-4 sm:p-6">
+      <div class="mb-4 flex items-center justify-between">
+        <h3 class="text-lg font-bold" i18n="@@jobseeker.admin.notificationTemplates.previewTitle">Preview</h3>
+        <app-modal-close (close)="closePreview()" />
+      </div>
+      @if (previewResult(); as preview) {
+        @if (preview.Email) {
+          <div class="mb-4">
+            <div class="text-sm font-bold text-black dark:text-white-light" i18n="@@jobseeker.admin.notificationTemplates.previewEmail">Email</div>
+            <div class="mt-1 text-sm text-white-dark">{{ preview.Email.Subject }}</div>
+            <div class="prose dark:prose-invert mt-2 max-w-none border-t border-white-light pt-3 dark:border-white-light/10" [innerHTML]="preview.Email.Body"></div>
+          </div>
+        }
+        @if (preview.Sms) {
+          <div>
+            <div class="text-sm font-bold text-black dark:text-white-light" i18n="@@jobseeker.admin.notificationTemplates.previewSms">SMS</div>
+            <p class="mt-1 whitespace-pre-wrap text-sm text-white-dark">{{ preview.Sms.Body }}</p>
+          </div>
+        }
+      }
+    </div>
+  </div>
+}

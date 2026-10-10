@@ -1,0 +1,25 @@
+---
+description: Current work targets the real Bidding_API backend — do not update mocks unless explicitly asked.
+alwaysApply: true
+---
+
+# Real API implementation (current mode)
+
+JobseekerModule development is against the **live .NET backend** (`Bidding_API` / `Bidding_Core`). `environment.useMockBackend` is **false** in the default development configuration.
+
+## Do
+
+- Implement **backend** endpoints, services, and DTOs in `Bidding_*` when a feature needs server support.
+- Wire the Angular client through `HttpClient` → real API (`api-paths.ts`, `*ApiService`, injection tokens).
+- Run the client with `npm start` / `npm run start:real` against a running API instance.
+- Align request/response shapes with the backend; profile id from JWT on self-service routes (see `api-profile-id-from-token.mdc`).
+- After successful HTTP, persist into NgRx per `http-store-sync.mdc`.
+
+## Do not (unless the user explicitly asks for mock work)
+
+- Add or extend routes in `mock-backend.interceptor.ts`
+- Seed or cross-link rows in `core/mocks/` or `assets/mocks/`
+- Branch feature logic on `environment.useMockBackend`
+- Assume mock persona data (e.g. Ahmad / profileId 101) exists for new features
+
+Mock assets remain in the repo for optional `npm run start:mock` but are **out of scope** for current implementation tasks.

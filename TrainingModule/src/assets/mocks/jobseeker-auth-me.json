@@ -1,0 +1,14 @@
+{
+  "Data": {
+    "ProfileId": 101,
+    "CompanyName": "Ahmad Al-Mutairi",
+    "Address": 1,
+    "PhoneNumber": "+968 9000 0000",
+    "EmailAddress": "ahmad@example.com",
+    "CrNumber": "12345678",
+    "Website": "https://example.com",
+    "About": "<p>Experienced software developer focused on web platforms.</p>",
+    "ServicesOffered": [{ "Id": 1 }, { "Id": 4 }],
+    "ProfileImage": "img-101"
+  }
+}

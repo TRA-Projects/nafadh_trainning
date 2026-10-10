@@ -1,0 +1,42 @@
+---
+description: All UI lookups from admin system config — no hardcoded or bundled lookup endpoints
+globs: Bidding_API/**/*.cs,Bidding_Core/**/*.cs,JobseekerModule/src/app/**/*.ts,JobseekerModule/src/assets/mocks/**
+alwaysApply: false
+---
+
+# Lookups: system config only
+
+Every **select / autocomplete / dropdown** option set (countries, nationalities, specifications, institutions, rejection reasons, etc.) must be **maintained in admin system config** and read through the **same catalog API** — not hardcoded seeds, not one-off JSON assets, not bundled “lookups” endpoints.
+
+## Do
+
+1. **Define a config group** in `SYSTEM_CONFIG_CODES` (`system-config-codes.ts`) — short key, same as admin Constants.
+2. **Seed rows** in the real DB (`SystemCatalogSeedData.cs` / admin Constants). Mock seeds (`mock-admin-system.state.ts`) only when explicitly maintaining mock mode.
+3. **Expose in admin UI** — Constants management (`/admin/system-administration/constants`).
+4. **Read from the client** via `AdminSystemApiService`:
+   - `getValues(code)` — full list / selects
+   - `searchConfigValues(code, query)` — autocomplete
+   - `ensureConfigValue(code, draft)` — user-typed “add new” (see `config-lookup-autocomplete.mdc`)
+5. **Forms** — prefer `app-config-lookup-autocomplete` with `[configCode]="SYSTEM_CONFIG_CODES.…"`.
+6. **Anonymous screens** (e.g. registration before login) — still use **config read** endpoints for those codes (e.g. `[AllowAnonymous]` GET on `system-config/values/{code}` if product requires public catalogs). Do **not** invent a separate registration lookup bundle.
+
+## Do not
+
+- ❌ Hardcoded lookup stores (`JobseekerRegistrationMockStore`, inline `countries[]` / `specifications[]` in C# or TS).
+- ❌ Dedicated lookup JSON under `assets/mocks/*-lookups.json` for new work.
+- ❌ Bundled endpoints such as `/api/jobseekers/registration-lookups` or `/api/v2/registration/lookups` that duplicate config groups in one payload.
+- ❌ Parallel “registration-only” catalogs when the same data belongs in system config (nationality, primary specification, cities linked via config/parentReasonId, etc.).
+
+## Legacy (removed — do not reintroduce)
+
+Do **not** add bundled registration lookup endpoints, `JobseekerRegistrationMockStore`, or `jobseeker-registration-lookups.json`. Registration reads `SYSTEM_CONFIG_CODES.NATIONALITY` and `SYSTEM_CONFIG_CODES.PRIMARY_SPECIFICATION` via `AdminSystemApiService.getValues`.
+
+## Checklist for a new lookup field
+
+1. Add `SYSTEM_CONFIG_CODES.*` constant.
+2. Seed bilingual rows (`label_en` / `label_ar`; use `parentReasonId` for dependent lists).
+3. Register in admin Constants UI if not auto-listed by code.
+4. Wire HTTP + UI through `AdminSystemApiService` / config lookup component.
+5. Add Arabic strings for any new admin/UI labels in `core/translations/`.
+
+See also: `config-lookup-autocomplete.mdc`, `http-store-sync.mdc`, `real-api-implementation.mdc`.

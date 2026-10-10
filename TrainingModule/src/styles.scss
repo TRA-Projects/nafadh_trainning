@@ -1,0 +1,422 @@
+@import 'sweetalert2/dist/sweetalert2.min.css';
+@import 'quill/dist/quill.snow.css';
+
+body {
+  margin: 0;
+}
+
+/* =========================================================
+   Global direction + alignment (EN LTR / AR RTL)
+   Source of truth for direction is `<html dir>` (set by LocaleService).
+   Keep overrides minimal and use logical properties where possible.
+   ========================================================= */
+
+html[dir='rtl'] body {
+  direction: rtl;
+  text-align: right;
+}
+
+html[dir='ltr'] body {
+  direction: ltr;
+  text-align: left;
+}
+
+/* Forms: make input text feel natural in RTL. */
+html[dir='rtl'] input,
+html[dir='rtl'] textarea,
+html[dir='rtl'] select {
+  text-align: right;
+}
+
+/* Tables: use logical alignment so it follows the active direction. */
+table th,
+table td {
+  text-align: start;
+}
+
+.icon-action-btn {
+  display: inline-flex;
+  height: 2rem;
+  width: 2rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  border: 1px solid transparent;
+  padding: 0;
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease,
+    box-shadow 0.15s ease,
+    transform 0.15s ease;
+}
+
+.icon-action-btn:hover {
+  transform: translateY(-1px);
+}
+
+.icon-action-btn img {
+  display: block;
+  height: 1rem;
+  width: 1rem;
+}
+
+.icon-action-btn--view {
+  border-color: rgba(0, 51, 141, 0.18);
+  background: rgba(0, 51, 141, 0.08);
+  box-shadow: 0 6px 16px rgba(0, 51, 141, 0.08);
+}
+
+.icon-action-btn--view:hover {
+  border-color: rgba(0, 51, 141, 0.34);
+  background: rgba(0, 51, 141, 0.14);
+}
+
+.icon-action-btn--view svg {
+  height: 1rem;
+  width: 1rem;
+  color: #00338d;
+}
+
+.icon-action-btn--download {
+  border-color: rgba(0, 51, 141, 0.18);
+  background: rgba(0, 51, 141, 0.08);
+  box-shadow: 0 6px 16px rgba(0, 51, 141, 0.08);
+}
+
+.icon-action-btn--download:hover {
+  border-color: rgba(0, 51, 141, 0.34);
+  background: rgba(0, 51, 141, 0.14);
+}
+
+.icon-action-btn--download img {
+  filter: invert(16%) sepia(72%) saturate(2421%) hue-rotate(207deg) brightness(83%) contrast(105%);
+}
+
+/* Amber — distinct from view (blue) / success (green) / delete (red). */
+.icon-action-btn--edit {
+  border-color: rgba(226, 160, 63, 0.28);
+  background: rgba(226, 160, 63, 0.12);
+  box-shadow: 0 6px 16px rgba(226, 160, 63, 0.1);
+}
+
+.icon-action-btn--edit:hover {
+  border-color: rgba(226, 160, 63, 0.45);
+  background: rgba(226, 160, 63, 0.2);
+}
+
+.icon-action-btn--edit img {
+  filter: invert(72%) sepia(48%) saturate(650%) hue-rotate(359deg) brightness(95%) contrast(92%);
+}
+
+.icon-action-btn--edit svg {
+  height: 1rem;
+  width: 1rem;
+  color: #e2a03f;
+}
+
+.icon-action-btn--success {
+  border-color: rgba(0, 171, 85, 0.22);
+  background: rgba(0, 171, 85, 0.08);
+  box-shadow: 0 6px 16px rgba(0, 171, 85, 0.08);
+}
+
+.icon-action-btn--success:hover {
+  border-color: rgba(0, 171, 85, 0.38);
+  background: rgba(0, 171, 85, 0.14);
+}
+
+/* Solid green primary action (theme `.btn-success` is not filled/hoverable). */
+.btn.btn-success {
+  border-color: #00ab55;
+  background-color: #00ab55;
+  color: #fff;
+  box-shadow: 0 10px 20px -10px rgba(0, 171, 85, 0.45);
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease,
+    box-shadow 0.15s ease,
+    filter 0.15s ease;
+}
+
+.btn.btn-success:hover:not(:disabled) {
+  border-color: #00964b;
+  background-color: #00964b;
+  color: #fff;
+  box-shadow: 0 12px 22px -10px rgba(0, 171, 85, 0.55);
+  filter: brightness(1.03);
+}
+
+.btn.btn-success:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+/*
+  Row ⋯ menus: later table/card rows paint after earlier ones, so the next row’s
+  ⋯ icon shows through an open menu. Component SCSS often sets z-index: 2 on the
+  wrap and wins over global rules — use !important, and elevate every cell in the
+  open row (z-index on `tr` alone is unreliable for tables).
+*/
+[data-row-actions-menu] {
+  position: relative !important;
+  z-index: 0 !important;
+}
+
+[data-row-actions-menu]:has([role='menu']) {
+  z-index: 400 !important;
+}
+
+[data-row-actions-menu] [role='menu'] {
+  z-index: 401 !important;
+  isolation: isolate;
+  background-color: #fff !important;
+  background-clip: padding-box;
+}
+
+.dark [data-row-actions-menu] [role='menu'],
+html.dark [data-row-actions-menu] [role='menu'] {
+  background-color: #0e1726 !important;
+}
+
+/* Elevate the whole open row above the following row’s ⋯ trigger. */
+tr:has([data-row-actions-menu]:has([role='menu'])) > * {
+  position: relative !important;
+  z-index: 400 !important;
+}
+
+li:has([data-row-actions-menu]:has([role='menu'])),
+article:has([data-row-actions-menu]:has([role='menu'])) {
+  position: relative !important;
+  z-index: 400 !important;
+}
+
+.icon-action-btn--success img {
+  filter: invert(48%) sepia(79%) saturate(2476%) hue-rotate(118deg) brightness(92%) contrast(101%);
+}
+
+.icon-action-btn--delete {
+  border-color: rgba(231, 81, 90, 0.2);
+  background: rgba(231, 81, 90, 0.08);
+  box-shadow: 0 6px 16px rgba(231, 81, 90, 0.08);
+}
+
+.icon-action-btn--delete:hover {
+  border-color: rgba(231, 81, 90, 0.38);
+  background: rgba(231, 81, 90, 0.14);
+}
+
+.icon-action-btn--delete img {
+  filter: invert(47%) sepia(71%) saturate(1987%) hue-rotate(323deg) brightness(94%) contrast(92%);
+}
+
+/* Keep numbers/dates readable in RTL contexts when needed. */
+html[dir='rtl'] .ltr,
+html[dir='rtl'] [dir='ltr'] {
+  direction: ltr;
+  unicode-bidi: isolate;
+}
+
+/* Modal dim layer: full viewport on small screens; from lg, leave the fixed sidebar (260px) visible. */
+.app-modal-backdrop {
+  position: fixed;
+  inset: 0;
+}
+
+/*
+ * Prebuilt `public/css/style.css` only includes a few arbitrary z utilities (e.g. z-[999]).
+ * Tailwind classes like z-[1200] in templates produce no CSS — nested modals would stack wrong.
+ * Use this modifier for overlays that must sit above the profile / primary modal layer (999).
+ */
+.app-modal-backdrop.app-modal-backdrop--elevated {
+  z-index: 1100;
+}
+
+@media (min-width: 1024px) {
+  html[dir='ltr'] .main-layout-app .app-modal-backdrop {
+    left: 260px;
+    right: 0;
+    top: 0;
+    bottom: 0;
+  }
+
+  html[dir='rtl'] .main-layout-app .app-modal-backdrop {
+    right: 260px;
+    left: 0;
+    top: 0;
+    bottom: 0;
+  }
+}
+
+/* ── SweetAlert2 toasts: above sidebar / modals (Vristo-style variants below) ── */
+.swal2-container {
+  z-index: 10060 !important;
+}
+
+/* Nudge toasts slightly inward from the viewport edge (top corner opposite sidebar). */
+.swal2-container.swal2-top-end {
+  padding: 0.75rem 0.75rem 0 0 !important;
+}
+
+.swal2-container.swal2-top-start {
+  padding: 0.75rem 0 0 0.75rem !important;
+}
+
+/* Mirrors `components-notifications.html` colored toasts (`color-success` / `color-danger`). */
+.swal2-container .swal2-popup.swal2-toast.color-success {
+  background: #00ab55 !important;
+  box-shadow: 0 10px 40px rgba(0, 171, 85, 0.28);
+  border-radius: 0.75rem !important;
+  /* Vristo Tailwind block (`assets/css/style.css`): compact padding; overrides mixin `2em` for a modern toast. */
+  padding: 0.625rem 1.25rem !important;
+}
+
+.swal2-container .swal2-popup.swal2-toast.color-success .swal2-title,
+.swal2-container .swal2-popup.swal2-toast.color-success .swal2-html-container {
+  color: #fff !important;
+  font-size: 0.875rem !important;
+  line-height: 1.25rem !important;
+  font-weight: 600 !important;
+}
+
+.swal2-container .swal2-popup.swal2-toast.color-success .swal2-timer-progress-bar {
+  background: rgba(255, 255, 255, 0.45);
+}
+
+.swal2-container .swal2-popup.swal2-toast.color-danger {
+  background: #e7515a !important;
+  box-shadow: 0 10px 40px rgba(231, 81, 90, 0.32);
+  border-radius: 0.75rem !important;
+  padding: 0.625rem 1.25rem !important;
+}
+
+.swal2-container .swal2-popup.swal2-toast.color-danger .swal2-title,
+.swal2-container .swal2-popup.swal2-toast.color-danger .swal2-html-container {
+  color: #fff !important;
+  font-size: 0.875rem !important;
+  line-height: 1.25rem !important;
+  font-weight: 600 !important;
+}
+
+.swal2-container .swal2-popup.swal2-toast.color-danger .swal2-close {
+  color: rgba(255, 255, 255, 0.9) !important;
+}
+
+.swal2-container .swal2-popup.swal2-toast.color-danger .swal2-timer-progress-bar {
+  background: rgba(255, 255, 255, 0.45);
+}
+
+/*
+ * Toast layout (app-wide Vristo mixin): message dominates; icon ~1/5 of the toast.
+ * Do not put a separate "Error" title — color + icon are enough (see UiAsyncToastHost).
+ */
+.swal2-container .swal2-popup.swal2-toast {
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.5rem !important;
+  max-width: min(24rem, calc(100vw - 1.5rem)) !important;
+}
+
+.swal2-container .swal2-popup.swal2-toast .swal2-icon {
+  flex: 0 0 20% !important;
+  width: 20% !important;
+  max-width: 2rem !important;
+  height: auto !important;
+  min-width: 1.25rem !important;
+  aspect-ratio: 1 / 1 !important;
+  margin: 0 !important;
+  border: none !important;
+  font-size: 0.75rem !important;
+}
+
+.swal2-container .swal2-popup.swal2-toast .swal2-icon .swal2-icon-content {
+  font-size: 0.875rem !important;
+}
+
+.swal2-container .swal2-popup.swal2-toast .swal2-title,
+.swal2-container .swal2-popup.swal2-toast .swal2-html-container {
+  flex: 1 1 80% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  text-align: start !important;
+}
+
+html[dir='rtl'] .swal2-container .swal2-popup.swal2-toast .swal2-icon {
+  margin: 0 !important;
+}
+
+/*
+ * Small on/off switch shared by admin grids/modals (prebuilt theme CSS has no switch utilities).
+ * Grid usage: `<input disabled>` for read-only display; modal usage: bound form control.
+ */
+.app-toggle {
+  position: relative;
+  display: inline-flex;
+  width: 2.75rem;
+  height: 1.5rem;
+  flex-shrink: 0;
+  cursor: pointer;
+}
+
+.app-toggle input {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  margin: 0;
+  opacity: 0;
+  cursor: inherit;
+}
+
+.app-toggle .app-toggle__track {
+  position: relative;
+  width: 100%;
+  border-radius: 9999px;
+  background: #ebedf2;
+  transition: background-color 0.2s ease;
+}
+
+.app-toggle .app-toggle__track::before {
+  content: '';
+  position: absolute;
+  top: 0.125rem;
+  inset-inline-start: 0.125rem;
+  width: 1.25rem;
+  height: 1.25rem;
+  border-radius: 9999px;
+  background: #fff;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+  transition: inset-inline-start 0.2s ease;
+}
+
+.app-toggle input:checked + .app-toggle__track {
+  background: #4361ee;
+}
+
+.app-toggle input:checked + .app-toggle__track::before {
+  inset-inline-start: calc(100% - 1.375rem);
+}
+
+.app-toggle input:disabled {
+  cursor: not-allowed;
+}
+
+.app-toggle input:disabled + .app-toggle__track {
+  opacity: 0.55;
+}
+
+.dark .app-toggle .app-toggle__track {
+  background: #1b2e4b;
+}
+
+@import './app/core/ui/nafadh-card-accent.scss';
+
+/* Mobile: keep page content from forcing horizontal scroll; tables scroll inside wrappers. */
+.main-content {
+  max-width: 100%;
+  overflow-x: clip;
+}
+
+.main-content .table-responsive {
+  max-width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}

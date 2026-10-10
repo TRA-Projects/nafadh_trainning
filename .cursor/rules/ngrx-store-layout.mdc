@@ -1,0 +1,19 @@
+---
+description: NgRx store folder layout — flat per feature under core/store
+alwaysApply: true
+---
+
+# NgRx store layout (JobseekerModule)
+
+Keep NgRx state organized **flat per feature** under `src/app/core/store/<feature_name>/` (or `features/<area>/store/<feature>/` for domain features).
+
+- Use **one folder per feature slice**, with prefixed files in that folder, for example:
+  - `<feature>.actions.ts`
+  - `<feature>.reducer.ts` (including `createFeature` export)
+  - `<feature>.selectors.ts` (if needed beyond generated selectors)
+  - `<feature>.state.ts`
+  - `<feature>.utils.ts` (pure helpers only)
+
+- **Do not** default to splitting into nested `actions/`, `reducers/`, `selectors/` subfolders unless a slice grows large enough that flat layout becomes hard to navigate.
+
+This matches the existing `ui-async` slice and should be the default for new store features unless the user asks otherwise.

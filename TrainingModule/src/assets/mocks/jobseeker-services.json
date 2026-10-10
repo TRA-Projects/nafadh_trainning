@@ -1,0 +1,12 @@
+{
+  "Data": [
+    { "Id": 1, "Name_en": "Information Technology", "Name_ar": "تقنية المعلومات" },
+    { "Id": 2, "Name_en": "Engineering", "Name_ar": "الهندسة" },
+    { "Id": 3, "Name_en": "Healthcare", "Name_ar": "الرعاية الصحية" },
+    { "Id": 4, "Name_en": "Business & Administration", "Name_ar": "الأعمال والإدارة" },
+    { "Id": 5, "Name_en": "Education & Training", "Name_ar": "التعليم والتدريب" },
+    { "Id": 6, "Name_en": "Finance & Accounting", "Name_ar": "المالية والمحاسبة" },
+    { "Id": 7, "Name_en": "Design & Creative", "Name_ar": "التصميم والإبداع" },
+    { "Id": 8, "Name_en": "Operations & Logistics", "Name_ar": "العمليات واللوجستيات" }
+  ]
+}

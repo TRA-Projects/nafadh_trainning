@@ -1,0 +1,14 @@
+---
+description: Use AsyncExecutorService + uiAsync global overlay for loads and mutations (no duplicate inline spinners)
+globs: JobseekerModule/**/*.ts,JobseekerModule/**/*.html
+alwaysApply: false
+---
+
+# Global loading (`uiAsync`)
+
+- **Overlay:** `MainLayoutComponent` shows the blocking spinner when NgRx `uiAsync.pendingDepth > 0` (driven by `AsyncExecutorService`).
+- **Fetches (initial load, tab refresh):** wrap HTTP in `AsyncExecutorService.execute(work, { recordSuccess: false, progressMessage?: string })`. Do not add component-only “Loading…” rows for the same work.
+- **Mutations:** same `execute()`; default `recordSuccess: true` unless silent success is required.
+- **Optional `loaded` signal** is allowed to gate template content until data exists; it must not duplicate the spinner UX.
+
+See `JobseekerModule/docs/DESIGN-GUIDE.md` §5.1.

@@ -1,0 +1,65 @@
+---
+description: Detail / read-only page layout — true 4-column grids, section separators, no bordered cards
+alwaysApply: true
+---
+
+# Detail page layout (JobseekerModule)
+
+Use this pattern for **read-only detail pages**, **inline detail panels**, and **manage-page overview tabs**.
+
+## Section structure
+
+1. **Section title** — `text-xl font-semibold text-black dark:text-white-light` (larger than field labels).
+2. **Separator between sections** — horizontal rule, not a bordered box:
+
+```html
+<div class="my-6 border-t border-white-light dark:border-white-light/10"></div>
+```
+
+3. **Do not** wrap section content in `rounded border … p-*` cards unless the product explicitly calls for a modal/dialog shell.
+
+## Label / value grid — always 4 columns (mandatory)
+
+Read-only field grids **must** use a true **4-column** layout on `sm+`: two field pairs per row.
+
+**Pattern:** `Label | Value | Label | Value` — each cell is **one** column. Do **not** use `sm:col-span-3` (that collapses the row into a 2-column look).
+
+```html
+<div class="grid grid-cols-1 gap-2 sm:grid-cols-4">
+  <div class="font-bold">{{ labels().fieldA }}</div>
+  <div class="text-white-dark">{{ valueA }}</div>
+  <div class="font-bold">{{ labels().fieldB }}</div>
+  <div class="text-white-dark">{{ valueB }}</div>
+
+  <div class="font-bold">{{ labels().fieldC }}</div>
+  <div class="text-white-dark">{{ valueC }}</div>
+  <div class="font-bold">{{ labels().fieldD }}</div>
+  <div class="text-white-dark">{{ valueD }}</div>
+</div>
+```
+
+### Rules
+
+- Default grid: **`grid grid-cols-1 gap-2 sm:grid-cols-4`** (stacks on mobile; see `mobile-responsive-pages.mdc`).
+- Label cell: `font-bold` (not uppercase micro-labels).
+- Value cell: `text-white-dark` only — **no** `sm:col-span-3` for normal fields.
+- Pair fields left-to-right; if a section has an **odd** last field, leave the last two columns empty (still no span).
+- **Long prose** (description, cover letter, multi-line notes): keep the same 4-col grid; put the label in col 1 and the text in cols 2–4 with `sm:col-span-3` **only** for that long block — never for short scalar fields.
+- Links/actions in values: `font-semibold text-primary underline` when needed.
+- Read-only bilingual pairs: show **one** locale-specific value (see `bilingual-field-suffixes.mdc`).
+
+### Do not
+
+- Stack every field as Label + full-width value (`col-span-3`) — that is a **2-column** layout and is wrong for overview/detail views.
+- Use `sm:grid-cols-2` for read-only label/value overviews.
+
+## Actions on detail pages
+
+- Place primary action buttons **at the top of the section**, before the field grid.
+- Align to the **start** of the reading direction: `flex flex-wrap justify-start gap-2 rtl:flex-row-reverse`.
+- Do not bury actions below long read-only content on dedicated detail routes.
+
+## Forms opened from detail pages
+
+- Avoid colored `border border-*` wrappers around inline confirm/forms.
+- Use spacing (`mt-4`, `space-y-4`) and optional separator above the form block instead.

@@ -1,0 +1,48 @@
+---
+description: Legacy mock-mode only — canonical Ahmad persona dataset; not required for real API work.
+alwaysApply: false
+---
+
+# Single Mock Dataset & Canonical Personas (mock mode only)
+
+> **Not in scope for current work.** See `real-api-implementation.mdc`. Only apply this rule when the user explicitly asks to maintain or extend mock data (`start:mock`).
+
+Mock data in `JobseekerModule/src/app/core/mocks/` and `JobseekerModule/src/assets/mocks/` is **one connected dataset**, not a collection of unrelated demos. Every persona / record you add **must** cross-reference the existing canonical IDs so the user can run a full end-to-end scenario without switching personas.
+
+## Canonical personas (already wired — do not duplicate)
+
+| Role | User id (`mock-users.json`) | `profileId` | Display name |
+|---|---|---|---|
+| **Default jobseeker** | `mock-jobseeker-1` | **101** | Ahmad Al-Mutairi |
+| Operator (company owner) | `mock-operator-1` | 201 | Mock Corp — Operator |
+| Platform admin | `mock-admin-1` | 1 | Platform Admin |
+| Portal seekers (competition pool) | `mock-portal-seeker-50X` | 501–510 | Aisha, Khalid, Maryam, … |
+
+The **default jobseeker (Ahmad / 101)** is the persona we log in as for jobseeker demos. Every jobseeker-side feature must include him in the seed data so his pages are non-empty out-of-the-box.
+
+## Ahmad's canonical chain (cross-reference these IDs in any new mock)
+
+| Layer | File | Identifier for Ahmad |
+|---|---|---|
+| User / profile | `assets/mocks/mock-users.json`, `jobseeker-auth-me.json`, `jobseeker-profile.json` | `mock-jobseeker-1` / **profileId 101** |
+| Portal seekers list | `mock-operator-jobs-portal.state.ts` → `PORTAL_SEEKERS_BASE` | row **Id 3199** |
+| Job applications (operator side) | `mock-operator-jobs-portal.state.ts` → `PORTAL_APPLICATIONS_SEED` | **#91020** (job 1201, shortlisted), **#91021** (job 1205, nominated) |
+| Jobseeker My Applications | `mock-jobseeker-my-applications.state.ts` → `DEFAULT_JOBSEEKER_APPLICATIONS` | **#88001** (job 1201), **#88002** (job 1205) |
+| Ask-to-apply inbox | `mock-job-seekers-ask-to-apply.state.ts` → `SEED_EVENTS` | (3199, 101, **job 1203**) |
+| Interview management candidate | `mock-interview-management.state.ts` → `INTERVIEW_MANAGEMENT_SEED_CANDIDATES` | **C-1099** |
+| Interview records | same file → `INTERVIEW_MANAGEMENT_SEED_RECORDS` | **IR-5001** (Software Engineer, Scheduled), **IR-5003** (DevOps, Confirmed) |
+| Employment procedure | `mock-employment-procedures.state.ts` → `SEED_RECORDS` | **EP-7099** (Pending offer + Draft contract on OPP-2001) |
+
+> If you add a new mock layer (notifications, contracts, payments, etc.) for the jobseeker side, **register Ahmad first** using the IDs above as foreign keys. Do not invent a new persona.
+
+## Rules for editing / extending mocks
+
+1. **One canonical dataset.** When you need a "jobseeker who has X", extend Ahmad. When you need a competition pool, use `profileId 501–510` from `mock-users.json`. Do not introduce a new third persona for a single demo.
+2. **Cross-reference, don't fork.** When a feature surfaces data that already exists in another mock (e.g. employment procedures show jobs from the portal), import the upstream IDs / lookup helpers (`PORTAL_MOCK_COMPANY_BY_JOB_ID`, `INTERVIEW_MANAGEMENT_SEED_OPPORTUNITIES`, etc.) instead of repeating company / job titles inline.
+3. **Keep the chain consistent.** If Ahmad applies for a job in the portal applications mock, also seed the matching row in `mock-jobseeker-my-applications`. If he is on an interview shortlist, ensure he exists as an interview-management candidate (`C-1099`) and the corresponding portal application has the right `PipelineStatus`.
+4. **Comment the cross-links.** Every new seed row referencing Ahmad must carry a short comment naming the other mocks / IDs it pairs with (see existing `EP-7099`, `IR-5001`, `#91020` for the pattern).
+5. **Reset functions seed the canonical state.** `resetMock*` helpers must restore Ahmad's seeded rows, not clear the table to empty.
+
+## When in doubt
+
+- Logging in as Ahmad and clicking through Find Jobs → My Applications → My Requests → Interviews → My Offers must feel like one continuous story. If a step looks empty after your change, you broke the chain — re-seed it before merging.

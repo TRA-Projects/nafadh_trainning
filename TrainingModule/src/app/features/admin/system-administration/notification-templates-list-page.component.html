@@ -1,0 +1,191 @@
+<div
+  class="rounded-xl border border-[#ebedf2] bg-white p-3 shadow-sm dark:border-[#191e3a] dark:bg-[#0e1726] sm:p-4 md:p-6"
+>
+  <h2 class="min-w-0 text-xl font-bold text-black dark:text-white-light sm:text-2xl" i18n="@@jobseeker.admin.notificationTemplates.title">
+    Notification templates
+  </h2>
+
+  <div class="mt-4 flex flex-wrap items-center gap-3">
+    <label class="flex min-w-0 flex-wrap items-center gap-2">
+      <span class="shrink-0 whitespace-nowrap text-sm text-white-dark" i18n="@@jobseeker.admin.notificationTemplates.search">Search</span>
+      <input
+        class="form-input w-72 max-w-full"
+        type="search"
+        [value]="searchQuery()"
+        (input)="setSearchQuery(($any($event.target).value ?? '').toString())"
+        i18n-placeholder="@@jobseeker.admin.notificationTemplates.searchPlaceholder"
+        placeholder="Search by action code or label…"
+      />
+    </label>
+  </div>
+
+  <div class="mt-4 rounded-xl border border-[#ebedf2] bg-white dark:border-[#191e3a] dark:bg-[#0e1726] md:overflow-hidden">
+    <!-- Mobile / tablet cards -->
+    <div class="p-3 lg:hidden">
+      <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
+        @for (row of rows(); track row.ActionCode; let i = $index) {
+          <article class="ntpl-card">
+            <div class="ntpl-card__header">
+              <button type="button" class="ntpl-card__identity" (click)="openEdit(row)">
+                <span class="ntpl-card__avatar" aria-hidden="true">
+                  <img [src]="'/images/nav/message.svg' | assetUrl" alt="" class="ntpl-card__avatar-icon" />
+                </span>
+                <span class="min-w-0">
+                  <span class="ntpl-card__name-row">
+                    <span class="ntpl-card__index">#{{ safePageIndex() * pageSize() + i + 1 }}</span>
+                    <span class="ntpl-card__name">{{ labelLocalized(row) }}</span>
+                  </span>
+                  <span class="ntpl-card__status-badge" [class.ntpl-card__status-badge--off]="!row.IsActive">
+                    {{ row.IsActive ? yesLabel : noLabel }}
+                  </span>
+                </span>
+              </button>
+              <div class="ntpl-card__actions">
+                <ng-container *ngTemplateOutlet="rowActionsMenu; context: { $implicit: row }" />
+              </div>
+            </div>
+
+            <div class="ntpl-card__meta">
+              <div>
+                <div class="ntpl-card__label" i18n="@@jobseeker.admin.notificationTemplates.colActionCode">Action code</div>
+                <div class="ntpl-card__value font-mono text-xs">{{ row.ActionCode }}</div>
+              </div>
+              <div>
+                <div class="ntpl-card__label" i18n="@@jobseeker.admin.notificationTemplates.colActive">Active</div>
+                <div class="ntpl-card__value">{{ row.IsActive ? yesLabel : noLabel }}</div>
+              </div>
+              <div>
+                <div class="ntpl-card__label" i18n="@@jobseeker.admin.notificationTemplates.colEmail">Email</div>
+                <div class="ntpl-card__value">{{ row.EmailEnabled ? yesLabel : noLabel }}</div>
+              </div>
+              <div>
+                <div class="ntpl-card__label" i18n="@@jobseeker.admin.notificationTemplates.colSms">SMS</div>
+                <div class="ntpl-card__value">{{ row.SmsEnabled ? yesLabel : noLabel }}</div>
+              </div>
+            </div>
+          </article>
+        }
+      </div>
+
+      @if (totalCount() === 0) {
+        <div
+          class="rounded-xl border border-dashed border-[#ebedf2] px-3 py-8 text-center text-sm text-white-dark dark:border-[#191e3a]"
+          i18n="@@jobseeker.common.noRecords"
+        >
+          No records
+        </div>
+      }
+    </div>
+
+    <!-- Desktop table -->
+    <div class="table-responsive hidden lg:block">
+      <table class="ntpl-table">
+        <thead>
+          <tr>
+            <th i18n="@@jobseeker.common.rowNumber">#</th>
+            <th i18n="@@jobseeker.admin.notificationTemplates.colActionCode">Action code</th>
+            <th i18n="@@jobseeker.admin.notificationTemplates.colLabel">Label</th>
+            <th i18n="@@jobseeker.admin.notificationTemplates.colActive">Active</th>
+            <th i18n="@@jobseeker.admin.notificationTemplates.colEmail">Email</th>
+            <th i18n="@@jobseeker.admin.notificationTemplates.colSms">SMS</th>
+            <th class="ntpl-actions-cell" i18n="@@jobseeker.common.actions">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          @if (totalCount() === 0) {
+            <tr>
+              <td colspan="7" class="py-8 text-center text-sm text-white-dark" i18n="@@jobseeker.common.noRecords">No records</td>
+            </tr>
+          } @else {
+            @for (row of rows(); track row.ActionCode; let i = $index) {
+              <tr>
+                <td class="text-white-dark">{{ safePageIndex() * pageSize() + i + 1 }}</td>
+                <td class="whitespace-nowrap font-mono text-xs">{{ row.ActionCode }}</td>
+                <td class="font-semibold text-black dark:text-white-light">{{ labelLocalized(row) }}</td>
+                <td class="text-white-dark">{{ row.IsActive ? yesLabel : noLabel }}</td>
+                <td class="text-white-dark">{{ row.EmailEnabled ? yesLabel : noLabel }}</td>
+                <td class="text-white-dark">{{ row.SmsEnabled ? yesLabel : noLabel }}</td>
+                <td class="ntpl-actions-cell">
+                  <ng-container *ngTemplateOutlet="rowActionsMenu; context: { $implicit: row }" />
+                </td>
+              </tr>
+            }
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <div class="ntpl-pager">
+      <span class="ntpl-pager__summary">{{ pageFooterLabel() }}</span>
+      <div class="ntpl-pager__controls">
+        <label class="ntpl-pager__size">
+          <span i18n="@@jobseeker.jobsList.perPage">Per page</span>
+          <select
+            class="form-select ntpl-pager__select"
+            [value]="pageSize()"
+            (change)="setPageSize(+$any($event.target).value)"
+          >
+            @for (s of pageSizeOptions; track s) {
+              <option [value]="s">{{ s }}</option>
+            }
+          </select>
+        </label>
+        <button
+          type="button"
+          class="btn btn-outline-primary btn-sm ntpl-pager__nav"
+          [disabled]="!canPrev()"
+          (click)="prevPage()"
+          aria-label="Prev"
+          i18n-aria-label="@@jobseeker.common.prev"
+        >
+          &lt;
+        </button>
+        <span class="ntpl-pager__page ntpl-pager__page--active">{{ safePageIndex() + 1 }}</span>
+        <button
+          type="button"
+          class="btn btn-outline-primary btn-sm ntpl-pager__nav"
+          [disabled]="!canNext()"
+          (click)="nextPage()"
+          aria-label="Next"
+          i18n-aria-label="@@jobseeker.common.next"
+        >
+          &gt;
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #rowActionsMenu let-row>
+  <div class="ntpl-actions-menu-wrap" data-row-actions-menu>
+    <button
+      type="button"
+      class="ntpl-actions-trigger"
+      [attr.aria-label]="rowActionsMenuAria"
+      [attr.title]="rowActionsMenuAria"
+      [attr.aria-expanded]="actionsMenuRowId() === row.ActionCode"
+      (click)="toggleRowActionsMenu(row.ActionCode, $event)"
+    >
+      <svg viewBox="0 0 24 24" class="h-5 w-5" fill="currentColor" aria-hidden="true">
+        <circle cx="12" cy="5" r="1.75" />
+        <circle cx="12" cy="12" r="1.75" />
+        <circle cx="12" cy="19" r="1.75" />
+      </svg>
+    </button>
+    @if (actionsMenuRowId() === row.ActionCode) {
+      <div class="ntpl-actions-menu" role="menu">
+        <button
+          type="button"
+          class="ntpl-actions-menu__item"
+          role="menuitem"
+          (click)="closeRowActionsMenu(); openEdit(row)"
+        >
+          <span class="ntpl-actions-menu__icon">
+            <img [src]="'/images/general/edit.svg' | assetUrl" alt="" class="h-4 w-4" />
+          </span>
+          <span i18n="@@jobseeker.common.edit">Edit</span>
+        </button>
+      </div>
+    }
+  </div>
+</ng-template>

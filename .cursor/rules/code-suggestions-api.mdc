@@ -1,0 +1,33 @@
+---
+description: Use SuggestionsApiService.getSuggestion + ApiPaths for debounced autocomplete; mock GET /api/v2/suggestions
+alwaysApply: false
+---
+
+# Code suggestions API (`getSuggestion`)
+
+Use the shared **`SuggestionsApiService.getSuggestion(code: string)`** whenever the UI needs **server-backed autocomplete** (free-text fields where the backend returns ranked matches for a typed fragment).
+
+## Contract
+
+- **HTTP:** `GET` `ApiPaths.suggestionsByCode(code)` → `/api/v2/suggestions?code=…` (query is URL-encoded).
+- **Response:** `{ Data: string[] }` or a bare `string[]` (handled via `unwrapData`).
+- **Empty input:** the service returns `of([])` without calling the network when `code.trim()` is empty.
+
+## UI pattern
+
+1. **Debounce** user input (e.g. `250ms`) and **`distinctUntilChanged`** on the control value.
+2. Use **`switchMap`** to `getSuggestion(value)` so slow responses do not race.
+3. Bind results to **`<datalist>`** options, a listbox, or chips — do not fire on every keystroke without debounce.
+4. **Errors:** the service maps failures to `[]`; optionally show a quiet hint if the list stays empty after a successful-type.
+
+## Mock
+
+`mock-backend.interceptor.ts` implements the same path for local development (filtered canned list).
+
+## Config lookup autocomplete
+
+For **bilingual admin catalog** fields, see **`config-lookup-autocomplete`** rule — inject `[configCode]` (same as `getValues(code)`), not institution-specific.
+
+## Do not
+
+- Duplicate ad-hoc `/suggestions` URLs in feature components — always go through **`SuggestionsApiService`** and **`ApiPaths`**.

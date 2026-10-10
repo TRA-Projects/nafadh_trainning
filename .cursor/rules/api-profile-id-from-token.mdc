@@ -1,0 +1,48 @@
+---
+description: Jobseeker-scoped API routes — profileId from JWT, clean URL shape
+globs: Bidding_API/Controllers/Jobseekers/**/*.cs,JobseekerModule/src/app/core/api/**/*.ts
+alwaysApply: false
+---
+
+# Jobseeker API URL conventions
+
+## Prefix
+
+All JobseekerModule backend routes live under **`/api/jobseekers/`** (module root). Do **not** add a redundant `jobseeker` segment (`/api/jobseekers/jobseeker/…`).
+
+| Area | Base path |
+|------|-----------|
+| Profile completion tabs | `/api/jobseekers/profile-completion/` |
+| General info + work scope | `/api/jobseekers/profile/` |
+| Admin / operator | `/api/jobseekers/admin/…` |
+
+## Profile id — token only (self-service routes)
+
+For routes that mutate or list **the logged-in job seeker’s own data**, never put `{profileId}` in the URL.
+
+```csharp
+[Authorize]
+[HttpDelete("experiences/{id:int}")]
+public async Task<IActionResult> DeleteExperience(int id)
+{
+    var profileId = int.Parse(CommonAction.GetLoggedInUserProfileId(User));
+    // ...
+}
+```
+
+- Frontend calls `/api/jobseekers/profile-completion/experiences/2`, not `…/experiences/2519/2`.
+- NgRx may still key cache by `profileId` from `auth/me`; that stays in app state, not the HTTP path.
+
+## When profile id in URL is OK
+
+Keep `{profileId}` only when the caller is **not** scoped to self — e.g. operator/admin reading another user (`/api/v2/auth/profiles/{id}/summary`, admin company verify, interview documents for a candidate pair).
+
+## Examples
+
+```text
+✅ GET  /api/jobseekers/profile-completion/experiences
+✅ DELETE /api/jobseekers/profile-completion/experiences/2
+✅ GET  /api/jobseekers/profile/general-info
+❌ DELETE /api/jobseekers/jobseeker/experiences/2519/2
+❌ GET  /api/jobseekers/profile/general-info/2519
+```

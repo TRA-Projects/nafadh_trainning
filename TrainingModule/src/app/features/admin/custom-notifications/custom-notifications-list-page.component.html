@@ -1,0 +1,308 @@
+<div class="rounded-xl border border-[#ebedf2] bg-white p-3 shadow-sm dark:border-[#191e3a] dark:bg-[#0e1726] sm:p-4 md:p-6">
+  <div class="flex flex-wrap items-center justify-between gap-3">
+    <h1 class="min-w-0 text-xl font-bold text-black dark:text-white-light sm:text-2xl" i18n="@@jobseeker.customNotifications.title">
+      Custom notifications
+    </h1>
+    <div class="flex flex-wrap items-center gap-2">
+      <button
+        type="button"
+        class="btn btn-outline-primary relative inline-flex h-10 w-10 shrink-0 items-center justify-center !px-0"
+        (click)="openDrawer()"
+        [attr.title]="advancedFiltersLabel"
+        [attr.aria-label]="advancedFiltersLabel"
+      >
+        <svg viewBox="0 0 24 24" class="h-4 w-4 shrink-0" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true">
+          <path d="M4 6h16M7 12h10M10 18h4" />
+        </svg>
+        @if (advancedFilterCount() > 0) {
+          <span
+            class="absolute -end-1 -top-1 inline-flex min-w-4 items-center justify-center rounded-full bg-primary px-1 text-[10px] font-semibold leading-4 text-white"
+          >
+            {{ advancedFilterCount() }}
+          </span>
+        }
+      </button>
+      <button
+        type="button"
+        class="admin-list-clear-btn"
+        (click)="clearFilters()"
+        [disabled]="!hasActiveFilters()"
+        [attr.title]="clearFiltersAria"
+        [attr.aria-label]="clearFiltersAria"
+      >
+        <svg viewBox="0 0 24 24" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true">
+          <path d="M5 5h14l-5 6.5v4.5L10.5 18v-6.5L5 5Z" stroke-linejoin="round" />
+          <path d="M16 15.5l4 4M20 15.5l-4 4" stroke-linecap="round" />
+        </svg>
+      </button>
+      <button
+        type="button"
+        class="cn-add-btn inline-flex h-10 shrink-0 items-center gap-2 rounded-md px-4 text-sm font-semibold"
+        (click)="goToCreate()"
+        [attr.title]="addLabel"
+        [attr.aria-label]="addLabel"
+      >
+        <svg viewBox="0 0 24 24" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <path d="M12 5v14M5 12h14" stroke-linecap="round" />
+        </svg>
+        <span>{{ addLabel }}</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="mt-4 hidden md:block">
+    <div class="rounded-xl border border-[#ebedf2] bg-white p-3 shadow-sm dark:border-[#191e3a] dark:bg-[#0e1726] sm:p-4">
+      <label class="mb-1 block text-sm" for="cn-q">{{ searchLabel }}</label>
+      <input
+        id="cn-q"
+        type="search"
+        class="form-input"
+        [value]="draftQuery()"
+        [attr.placeholder]="searchPlaceholder"
+        (input)="onSearchInputChange($any($event.target).value)"
+      />
+    </div>
+  </div>
+
+  <div class="mt-4 rounded-xl border border-[#ebedf2] bg-white dark:border-[#191e3a] dark:bg-[#0e1726] md:overflow-hidden">
+    <div class="p-3 lg:hidden">
+      @if (rows().length === 0) {
+        <div class="py-8 text-center text-sm text-white-dark" i18n="@@jobseeker.common.noRecords">No records</div>
+      } @else {
+        <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
+          @for (row of rows(); track row.Id; let i = $index) {
+            <article class="cn-card">
+              <div class="cn-card__header">
+                <button type="button" class="cn-card__identity" (click)="open(row)">
+                  <span class="min-w-0">
+                    <span class="cn-card__name-row">
+                      <span class="cn-card__index">#{{ safePageIndex() * pageSize() + i + 1 }}</span>
+                      <span class="cn-card__name">{{ title(row) }}</span>
+                    </span>
+                    <span class="cn-card__status">
+                      <span [class]="statusPillClass(row.Status)">{{ statusLabel(row.Status) }}</span>
+                    </span>
+                  </span>
+                </button>
+                <div class="cn-card__actions">
+                  <ng-container *ngTemplateOutlet="rowActionsMenu; context: { $implicit: row }" />
+                </div>
+              </div>
+              <div class="cn-card__meta">
+                <div>
+                  <div class="cn-card__label" i18n="@@jobseeker.customNotifications.colChannels">Channels</div>
+                  <div class="cn-card__value">{{ channelsLabel(row) }}</div>
+                </div>
+                <div>
+                  <div class="cn-card__label" i18n="@@jobseeker.customNotifications.colTargets">Targets</div>
+                  <div class="cn-card__value">{{ targetsLabel(row) }}</div>
+                </div>
+                <div>
+                  <div class="cn-card__label" i18n="@@jobseeker.customNotifications.colScheduled">Scheduled at</div>
+                  <div class="cn-card__value">{{ formatDate(row.ScheduledAtUtc) }}</div>
+                </div>
+                <div>
+                  <div class="cn-card__label" i18n="@@jobseeker.customNotifications.colDelivered">Delivered</div>
+                  <div class="cn-card__value">{{ deliveryLabel(row) }}</div>
+                </div>
+              </div>
+            </article>
+          }
+        </div>
+      }
+    </div>
+
+    <div class="table-responsive hidden lg:block">
+      <table class="cn-table">
+        <thead>
+          <tr>
+            <th i18n="@@jobseeker.common.rowNumber">#</th>
+            <th i18n="@@jobseeker.common.title">Title</th>
+            <th i18n="@@jobseeker.customNotifications.colChannels">Channels</th>
+            <th i18n="@@jobseeker.customNotifications.colTargets">Targets</th>
+            <th i18n="@@jobseeker.customNotifications.colScheduled">Scheduled at</th>
+            <th i18n="@@jobseeker.customNotifications.colStatus">Status</th>
+            <th i18n="@@jobseeker.customNotifications.colDelivered">Delivered</th>
+            <th class="cn-actions-cell" i18n="@@jobseeker.common.actions">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (row of rows(); track row.Id; let i = $index) {
+            <tr>
+              <td>{{ safePageIndex() * pageSize() + i + 1 }}</td>
+              <td class="max-w-[18rem] break-words font-semibold">{{ title(row) }}</td>
+              <td>{{ channelsLabel(row) }}</td>
+              <td>{{ targetsLabel(row) }}</td>
+              <td>{{ formatDate(row.ScheduledAtUtc) }}</td>
+              <td><span [class]="statusPillClass(row.Status)">{{ statusLabel(row.Status) }}</span></td>
+              <td>{{ deliveryLabel(row) }}</td>
+              <td class="cn-actions-cell">
+                <ng-container *ngTemplateOutlet="rowActionsMenu; context: { $implicit: row }" />
+              </td>
+            </tr>
+          } @empty {
+            <tr>
+              <td colspan="8" class="py-8 text-center text-white-dark" i18n="@@jobseeker.common.noRecords">No records</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <div class="cn-pager">
+      <span class="cn-pager__summary">{{ pageFooterLabel() }}</span>
+      <div class="cn-pager__controls">
+        <label class="cn-pager__size">
+          <span i18n="@@jobseeker.jobsList.perPage">Per page</span>
+          <select class="form-select cn-pager__select" [value]="pageSize()" (change)="setPageSize(+$any($event.target).value)">
+            @for (s of pageSizeOptions; track s) {
+              <option [value]="s">{{ s }}</option>
+            }
+          </select>
+        </label>
+        <button
+          type="button"
+          class="btn btn-outline-primary btn-sm cn-pager__nav"
+          [disabled]="!canPrev()"
+          (click)="prevPage()"
+          aria-label="Prev"
+          i18n-aria-label="@@jobseeker.common.prev"
+        >
+          &lt;
+        </button>
+        <span class="cn-pager__page cn-pager__page--active">{{ safePageIndex() + 1 }}</span>
+        <button
+          type="button"
+          class="btn btn-outline-primary btn-sm cn-pager__nav"
+          [disabled]="!canNext()"
+          (click)="nextPage()"
+          aria-label="Next"
+          i18n-aria-label="@@jobseeker.common.next"
+        >
+          &gt;
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+@if (drawerOpen()) {
+  <div class="fixed inset-0 z-[999] flex justify-end bg-[black]/60" (click)="closeDrawer()">
+    <aside
+      role="dialog"
+      aria-modal="true"
+      class="flex h-full w-full max-w-lg flex-col bg-white shadow-2xl dark:bg-[#0e1726]"
+      (click)="$event.stopPropagation()"
+    >
+      <div class="shrink-0 border-b border-white-light px-4 py-4 dark:border-[#191e3a]">
+        <h2 class="text-center text-lg font-bold text-primary" i18n="@@jobseeker.jobSeekerSearch.advancedTitle">Advanced filters</h2>
+      </div>
+
+      <div class="min-h-0 flex-1 space-y-5 overflow-y-auto bg-white p-4 dark:bg-[#0e1726] sm:p-5">
+        <section class="md:hidden">
+          <h3 class="cn-adv-section-title">
+            <span class="cn-adv-section-title__bar" aria-hidden="true"></span>
+            <span>{{ searchLabel }}</span>
+          </h3>
+          <input
+            type="search"
+            class="form-input"
+            [value]="draftQuery()"
+            [attr.placeholder]="searchPlaceholder"
+            (input)="draftQuery.set($any($event.target).value)"
+            (keydown.enter)="applyDrawer()"
+          />
+        </section>
+
+        <section>
+          <h3 class="cn-adv-section-title">
+            <span class="cn-adv-section-title__bar" aria-hidden="true"></span>
+            <span i18n="@@jobseeker.customNotifications.colStatus">Status</span>
+          </h3>
+          <select class="form-select" [ngModel]="filterStatus()" (ngModelChange)="filterStatus.set($event)">
+            <option value="" i18n="@@jobseeker.common.all">All</option>
+            @for (s of statuses; track s) {
+              <option [value]="s">{{ statusLabel(s) }}</option>
+            }
+          </select>
+        </section>
+
+        <section>
+          <h3 class="cn-adv-section-title">
+            <span class="cn-adv-section-title__bar" aria-hidden="true"></span>
+            <span i18n="@@jobseeker.customNotifications.colChannels">Channels</span>
+          </h3>
+          <select class="form-select" [ngModel]="filterChannel()" (ngModelChange)="filterChannel.set($event)">
+            <option value="" i18n="@@jobseeker.common.all">All</option>
+            <option value="Email" i18n="@@jobseeker.customNotifications.channelEmail">Email</option>
+            <option value="SMS" i18n="@@jobseeker.customNotifications.channelSms">SMS</option>
+            <option value="System" i18n="@@jobseeker.customNotifications.channelSystem">System</option>
+          </select>
+        </section>
+      </div>
+
+      <div
+        class="flex shrink-0 flex-wrap items-center justify-end gap-2 border-t border-white-light bg-white px-4 py-3 dark:border-[#191e3a] dark:bg-[#0e1726] rtl:flex-row-reverse"
+      >
+        <button type="button" class="btn btn-primary btn-sm" (click)="applyDrawer()" i18n="@@jobseeker.jobSeekerSearch.apply">Apply</button>
+        <button
+          type="button"
+          class="btn btn-outline-danger btn-sm px-2.5 py-1 text-xs"
+          (click)="clearDrawerFilters()"
+          i18n="@@jobseeker.jobSeekerSearch.clear"
+        >
+          Clear
+        </button>
+        <button type="button" class="btn btn-outline-primary btn-sm" (click)="closeDrawer()" i18n="@@jobseeker.common.cancel">Cancel</button>
+      </div>
+    </aside>
+  </div>
+}
+
+<ng-template #rowActionsMenu let-row>
+  <div class="cn-actions-menu-wrap" data-row-actions-menu>
+    <button
+      type="button"
+      class="cn-actions-trigger"
+      [attr.aria-label]="rowActionsMenuAria"
+      [attr.aria-expanded]="actionsMenuRowId() === row.Id"
+      (click)="toggleActionsMenu(row.Id, $event)"
+    >
+      <svg viewBox="0 0 24 24" class="h-5 w-5" fill="currentColor" aria-hidden="true">
+        <circle cx="12" cy="5" r="1.75" />
+        <circle cx="12" cy="12" r="1.75" />
+        <circle cx="12" cy="19" r="1.75" />
+      </svg>
+    </button>
+    @if (actionsMenuRowId() === row.Id) {
+      <div class="cn-actions-menu" role="menu">
+        <button type="button" class="cn-actions-menu__item" role="menuitem" (click)="open(row)">
+          <span class="cn-actions-menu__icon" aria-hidden="true">
+            @if (row.CanEdit) {
+              <svg viewBox="0 0 24 24" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="1.75">
+                <path d="M4 20h4L18.5 9.5a2.12 2.12 0 0 0-3-3L5 17v3Z" stroke-linejoin="round" />
+              </svg>
+            } @else {
+              <svg viewBox="0 0 24 24" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="1.75">
+                <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z" />
+                <circle cx="12" cy="12" r="3" />
+              </svg>
+            }
+          </span>
+          <span>{{ row.CanEdit ? editActionLabel : viewActionLabel }}</span>
+        </button>
+        @if (row.CanEdit) {
+          <button type="button" class="cn-actions-menu__item" role="menuitem" (click)="cancel(row)">
+            <span class="cn-actions-menu__icon text-danger" aria-hidden="true">
+              <svg viewBox="0 0 24 24" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="1.75">
+                <circle cx="12" cy="12" r="9" />
+                <path d="M9 9l6 6M15 9l-6 6" stroke-linecap="round" />
+              </svg>
+            </span>
+            <span>{{ cancelActionLabel }}</span>
+          </button>
+        }
+      </div>
+    }
+  </div>
+</ng-template>

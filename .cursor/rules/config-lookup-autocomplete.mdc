@@ -1,0 +1,67 @@
+---
+description: Reusable bilingual config lookup autocomplete — inject configCode (same as getValues)
+alwaysApply: false
+---
+
+# Config lookup autocomplete (`app-config-lookup-autocomplete`)
+
+Use for any field backed by an **admin system config group** (same codes as `getValues` / Constants management).
+
+## Inject the code (required)
+
+```html
+<app-config-lookup-autocomplete
+  formControlName="someLookup"
+  [configCode]="SYSTEM_CONFIG_CODES.EDUCATIONAL_INSTITUTION"
+/>
+```
+
+The **`configCode` input is not institution-specific** — it selects which catalog this control uses:
+
+| Code (example) | Used for |
+|----------------|----------|
+| `SYSTEM_CONFIG_CODES.EDUCATIONAL_INSTITUTION` | Academic institution on education tab |
+| `SYSTEM_CONFIG_CODES.FIELD_OF_STUDY` | Could replace static select + allow custom values |
+| Any other `getValues(code)` group | Same component, different catalog |
+
+Codes live in `system-config-codes.ts`; seed rows in `mock-admin-system.state.ts` and list them in admin Constants management.
+
+## Value shape
+
+```ts
+{ id?: string | number; label_en: string; label_ar: string }
+```
+
+- **Selected from dropdown** → `id` set, both labels from row.
+- **Typed without selecting** → no `id`; active locale label filled (create on save).
+
+Validator: `configLookupRequired()` from `config-lookup.validators.ts`.
+
+## API
+
+- **Search:** `AdminSystemApiService.searchConfigValues(configCode, query)` → `GET /api/v2/admin/system-config/values/{code}/search?q=…`
+- **Full list:** `getValues(configCode)` (unchanged)
+- **Ensure (find-or-create):** `AdminSystemApiService.ensureConfigValue(configCode, lookup)` on free-text commit and on form save when `id` is missing (mock: `POST …/values/{code}/ensure`)
+
+## Linked sub-catalog (main + sub pair)
+
+When a main catalog has dependent sub-values, register the pair in `system-config-sub-codes.util.ts` (`MAIN_TO_SUB_CONFIG_CODE`). Then wire the form with **two inputs only**:
+
+```html
+<app-config-lookup-autocomplete
+  formControlName="mainLookup"
+  [configCode]="SYSTEM_CONFIG_CODES.SOME_MAIN"
+  [subControl]="form.controls.subLookup"
+  [subFieldLabel]="labels().subLabel"
+/>
+```
+
+- Sub catalog code is **resolved automatically** from `MAIN_TO_SUB_CONFIG_CODE[configCode]`.
+- Override with `[subConfigCode]` only when needed.
+- On the main row, enable **Linked sub-menu** in Constants → Main (sets `subReasonDropdown` on the API row).
+- Sub values are managed under Constants → Sub, filtered by parent main value.
+
+## Do not
+
+- Hard-code `EDUC_INST` inside the component — only the **parent** passes `[configCode]`.
+- Use `SuggestionsApiService.getSuggestion` for catalog-backed bilingual rows (that API is for plain string fragments, e.g. sub-specialty).

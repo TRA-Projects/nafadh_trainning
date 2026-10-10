@@ -1,0 +1,588 @@
+<div class="rounded-xl border border-[#ebedf2] bg-white p-3 shadow-sm dark:border-[#191e3a] dark:bg-[#0e1726] sm:p-4 md:p-6">
+  <div class="flex flex-wrap items-center justify-between gap-3 text-start rtl:flex-row-reverse">
+    <h1 class="min-w-0 text-xl font-bold text-black dark:text-white-light sm:text-2xl" i18n="@@jobseeker.admin.auditTrail.title">
+      Audit trail
+    </h1>
+    <div class="flex flex-wrap gap-2">
+      <button
+        type="button"
+        class="btn btn-sm"
+        [class.btn-primary]="viewMode() === 'changes'"
+        [class.btn-outline-primary]="viewMode() !== 'changes'"
+        (click)="setViewMode('changes')"
+        i18n="@@jobseeker.admin.auditTrail.tabChanges"
+      >
+        Changes
+      </button>
+      <button
+        type="button"
+        class="btn btn-sm"
+        [class.btn-primary]="viewMode() === 'value-history'"
+        [class.btn-outline-primary]="viewMode() !== 'value-history'"
+        (click)="setViewMode('value-history')"
+        i18n="@@jobseeker.admin.auditTrail.tabValueHistory"
+      >
+        Value history
+      </button>
+    </div>
+  </div>
+
+  <div class="mt-4">
+    <div
+      class="rounded-xl border border-[#ebedf2] bg-white p-3 shadow-sm dark:border-[#191e3a] dark:bg-[#0e1726] sm:p-4"
+    >
+      <div class="grid grid-cols-1 items-end gap-3 lg:grid-cols-[minmax(0,1fr)_auto]">
+        <!-- Desktop quick filters; mobile uses the drawer. -->
+        <div class="hidden grid-cols-1 gap-3 md:grid md:grid-cols-2 xl:grid-cols-4">
+          <div>
+            <label class="mb-1 block text-sm" i18n="@@jobseeker.admin.auditTrail.filterModule">Module</label>
+            <select class="form-select" [ngModel]="filterModule()" (ngModelChange)="setModule($event)">
+              @for (m of moduleOptions; track m.value) {
+                <option [value]="m.value">{{ moduleLabel(m) }}</option>
+              }
+            </select>
+          </div>
+          <div>
+            <label class="mb-1 block text-sm" i18n="@@jobseeker.admin.auditTrail.filterEntityType">Entity type</label>
+            <select class="form-select" [ngModel]="filterEntityType()" (ngModelChange)="setEntityType($event)">
+              @for (e of entityTypeOptions(); track e.value) {
+                <option [value]="e.value">{{ entityTypeLabel(e) }}</option>
+              }
+            </select>
+          </div>
+          <div>
+            <label class="mb-1 block text-sm" i18n="@@jobseeker.admin.auditTrail.filterEntityReference"
+              >Entity reference</label
+            >
+            <input
+              class="form-input"
+              [ngModel]="filterEntityReference()"
+              (ngModelChange)="filterEntityReference.set($event)"
+              (keydown.enter)="search()"
+              placeholder="IR-3722"
+            />
+          </div>
+          <div>
+            <label class="mb-1 block text-sm" i18n="@@jobseeker.admin.auditTrail.filterField">Field</label>
+            <input
+              class="form-input"
+              [ngModel]="filterField()"
+              (ngModelChange)="filterField.set($event)"
+              (keydown.enter)="search()"
+            />
+          </div>
+
+          @if (viewMode() === 'changes') {
+            <div>
+              <label class="mb-1 block text-sm" i18n="@@jobseeker.admin.auditTrail.filterAction">Action</label>
+              <select class="form-select" [ngModel]="filterAction()" (ngModelChange)="filterAction.set($event)">
+                <option value="" i18n="@@jobseeker.common.all">All</option>
+                <option value="Create">Create</option>
+                <option value="Update">Update</option>
+                <option value="Delete">Delete</option>
+              </select>
+            </div>
+            <div>
+              <label class="mb-1 block text-sm" i18n="@@jobseeker.admin.auditTrail.filterSource">Source</label>
+              <select class="form-select" [ngModel]="filterSource()" (ngModelChange)="filterSource.set($event)">
+                <option value="" i18n="@@jobseeker.common.all">All</option>
+                <option value="UI">UI</option>
+                <option value="Scheduler">Scheduler</option>
+              </select>
+            </div>
+            <div>
+              <label class="mb-1 block text-sm" i18n="@@jobseeker.admin.auditTrail.filterUpdatedBy"
+                >Updated by (user id)</label
+              >
+              <input
+                class="form-input"
+                [ngModel]="filterUpdatedBy()"
+                (ngModelChange)="filterUpdatedBy.set($event)"
+                (keydown.enter)="search()"
+              />
+            </div>
+          }
+
+          <div>
+            <label class="mb-1 block text-sm" i18n="@@jobseeker.admin.auditTrail.filterValue">Value</label>
+            <input
+              class="form-input"
+              [ngModel]="filterValue()"
+              (ngModelChange)="filterValue.set($event)"
+              (keydown.enter)="search()"
+            />
+          </div>
+          <div>
+            <label class="mb-1 block text-sm" i18n="@@jobseeker.admin.auditTrail.filterFrom">From</label>
+            <input
+              type="datetime-local"
+              class="form-input"
+              [ngModel]="filterUpdatedFrom()"
+              (ngModelChange)="filterUpdatedFrom.set($event)"
+            />
+          </div>
+          <div>
+            <label class="mb-1 block text-sm" i18n="@@jobseeker.admin.auditTrail.filterTo">To</label>
+            <input
+              type="datetime-local"
+              class="form-input"
+              [ngModel]="filterUpdatedTo()"
+              (ngModelChange)="filterUpdatedTo.set($event)"
+            />
+          </div>
+        </div>
+
+        <div class="flex flex-wrap items-center justify-end gap-2">
+          <button
+            type="button"
+            class="btn btn-outline-primary relative inline-flex h-10 w-10 shrink-0 items-center justify-center !px-0"
+            (click)="openDrawer()"
+            [attr.title]="advancedFiltersLabel"
+            [attr.aria-label]="advancedFiltersLabel"
+          >
+            <svg viewBox="0 0 24 24" class="h-4 w-4 shrink-0" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true">
+              <path d="M4 6h16M7 12h10M10 18h4" />
+            </svg>
+            @if (advancedFilterCount() > 0) {
+              <span
+                class="absolute -end-1 -top-1 inline-flex min-w-4 items-center justify-center rounded-full bg-primary px-1 text-[10px] font-semibold leading-4 text-white"
+              >
+                {{ advancedFilterCount() }}
+              </span>
+            }
+          </button>
+          <button
+            type="button"
+            class="admin-list-clear-btn order-2 md:order-3"
+            (click)="clearFilters()"
+            [disabled]="!hasActiveFilters()"
+            [attr.title]="clearFiltersAria"
+            [attr.aria-label]="clearFiltersAria"
+          >
+            <svg viewBox="0 0 24 24" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true">
+              <path d="M4 7h16M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2M6 7l1 12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-12M10 11v6M14 11v6" />
+            </svg>
+          </button>
+          <button type="button" class="btn btn-primary h-10 px-4 order-3 md:order-2" (click)="search()">
+            {{ searchLabel }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="mt-4 rounded-xl border border-[#ebedf2] bg-white dark:border-[#191e3a] dark:bg-[#0e1726] md:overflow-hidden">
+    @if (viewMode() === 'changes') {
+      <div class="p-3 lg:hidden">
+        @if (changeRows().length === 0) {
+          <div class="py-8 text-center text-sm text-white-dark" i18n="@@jobseeker.common.noRecords">No records</div>
+        } @else {
+          <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
+            @for (row of changeRows(); track trackChange($index, row); let i = $index) {
+              <article class="audit-trail-card">
+                <div class="audit-trail-card__header">
+                  <div class="audit-trail-card__identity">
+                    <span class="audit-trail-card__avatar" aria-hidden="true">
+                      <img [src]="'/images/nav/user.svg' | assetUrl" alt="" class="audit-trail-card__avatar-icon" />
+                    </span>
+                    <span class="min-w-0">
+                      <span class="audit-trail-card__name-row">
+                        <span class="audit-trail-card__index">#{{ safePageIndex() * pageSize() + i + 1 }}</span>
+                        <span class="audit-trail-card__name font-mono">{{ row.EntityReference }}</span>
+                      </span>
+                      <span class="audit-trail-card__status">
+                        <span
+                          class="inline-flex items-center rounded border border-primary/30 bg-primary/10 px-2 py-0.5 text-xs font-semibold text-primary"
+                        >
+                          {{ row.Action }}
+                        </span>
+                      </span>
+                    </span>
+                  </div>
+                </div>
+                <div class="audit-trail-card__meta">
+                  <div>
+                    <div class="audit-trail-card__label" i18n="@@jobseeker.admin.auditTrail.colModule">Module</div>
+                    <div class="audit-trail-card__value">{{ row.Module }}</div>
+                  </div>
+                  <div>
+                    <div class="audit-trail-card__label" i18n="@@jobseeker.admin.auditTrail.colEntityType">Entity type</div>
+                    <div class="audit-trail-card__value">{{ row.EntityType }}</div>
+                  </div>
+                  <div>
+                    <div class="audit-trail-card__label" i18n="@@jobseeker.admin.auditTrail.colField">Field</div>
+                    <div class="audit-trail-card__value">{{ row.Field }}</div>
+                  </div>
+                  <div>
+                    <div class="audit-trail-card__label" i18n="@@jobseeker.admin.auditTrail.colSource">Source</div>
+                    <div class="audit-trail-card__value">{{ row.Source }}</div>
+                  </div>
+                  <div>
+                    <div class="audit-trail-card__label" i18n="@@jobseeker.admin.auditTrail.colOldValue">Old value</div>
+                    <div class="audit-trail-card__value truncate" [title]="row.OldValue || ''">{{ row.OldValue || '—' }}</div>
+                  </div>
+                  <div>
+                    <div class="audit-trail-card__label" i18n="@@jobseeker.admin.auditTrail.colNewValue">New value</div>
+                    <div class="audit-trail-card__value truncate" [title]="row.NewValue || ''">{{ row.NewValue || '—' }}</div>
+                  </div>
+                  <div>
+                    <div class="audit-trail-card__label" i18n="@@jobseeker.admin.auditTrail.colUpdatedBy">Updated by</div>
+                    <div class="audit-trail-card__value font-mono">{{ row.UpdatedByUserId || '—' }}</div>
+                  </div>
+                  <div>
+                    <div class="audit-trail-card__label" i18n="@@jobseeker.admin.auditTrail.colUpdatedDate">Updated date</div>
+                    <div class="audit-trail-card__value">{{ formatDate(row.UpdatedDate) }}</div>
+                  </div>
+                </div>
+              </article>
+            }
+          </div>
+        }
+      </div>
+
+      <div class="table-responsive hidden lg:block">
+        <table class="audit-trail-table">
+          <thead>
+            <tr>
+              <th i18n="@@jobseeker.common.rowNumber">#</th>
+              <th i18n="@@jobseeker.admin.auditTrail.colModule">Module</th>
+              <th i18n="@@jobseeker.admin.auditTrail.colEntityType">Entity type</th>
+              <th i18n="@@jobseeker.admin.auditTrail.colEntityReference">Entity reference</th>
+              <th i18n="@@jobseeker.admin.auditTrail.colField">Field</th>
+              <th i18n="@@jobseeker.admin.auditTrail.colOldValue">Old value</th>
+              <th i18n="@@jobseeker.admin.auditTrail.colNewValue">New value</th>
+              <th i18n="@@jobseeker.admin.auditTrail.colAction">Action</th>
+              <th i18n="@@jobseeker.admin.auditTrail.colSource">Source</th>
+              <th i18n="@@jobseeker.admin.auditTrail.colUpdatedBy">Updated by</th>
+              <th i18n="@@jobseeker.admin.auditTrail.colUpdatedDate">Updated date</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (row of changeRows(); track trackChange($index, row); let i = $index) {
+              <tr>
+                <td>{{ safePageIndex() * pageSize() + i + 1 }}</td>
+                <td>{{ row.Module }}</td>
+                <td>{{ row.EntityType }}</td>
+                <td class="font-mono text-sm">{{ row.EntityReference }}</td>
+                <td>{{ row.Field }}</td>
+                <td class="max-w-[12rem] truncate" [title]="row.OldValue || ''">{{ row.OldValue || '—' }}</td>
+                <td class="max-w-[12rem] truncate" [title]="row.NewValue || ''">{{ row.NewValue || '—' }}</td>
+                <td>{{ row.Action }}</td>
+                <td>{{ row.Source }}</td>
+                <td class="font-mono text-sm">{{ row.UpdatedByUserId || '—' }}</td>
+                <td class="whitespace-nowrap">{{ formatDate(row.UpdatedDate) }}</td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="11" class="py-6 text-center text-white-dark" i18n="@@jobseeker.common.noRecords">No records</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    } @else {
+      <div class="p-3 lg:hidden">
+        @if (historyRows().length === 0) {
+          <div class="py-8 text-center text-sm text-white-dark" i18n="@@jobseeker.common.noRecords">No records</div>
+        } @else {
+          <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
+            @for (row of historyRows(); track trackHistory($index, row); let i = $index) {
+              <article class="audit-trail-card">
+                <div class="audit-trail-card__header">
+                  <div class="audit-trail-card__identity">
+                    <span class="audit-trail-card__avatar" aria-hidden="true">
+                      <img [src]="'/images/nav/user.svg' | assetUrl" alt="" class="audit-trail-card__avatar-icon" />
+                    </span>
+                    <span class="min-w-0">
+                      <span class="audit-trail-card__name-row">
+                        <span class="audit-trail-card__index">#{{ safePageIndex() * pageSize() + i + 1 }}</span>
+                        <span class="audit-trail-card__name font-mono">{{ row.EntityReference }}</span>
+                      </span>
+                      <span class="audit-trail-card__status">
+                        <span
+                          class="inline-flex items-center rounded border border-white-light px-2 py-0.5 text-xs font-semibold text-white-dark dark:border-[#191e3a]"
+                        >
+                          {{ row.Source }}
+                        </span>
+                      </span>
+                    </span>
+                  </div>
+                </div>
+                <div class="audit-trail-card__meta">
+                  <div>
+                    <div class="audit-trail-card__label" i18n="@@jobseeker.admin.auditTrail.colEntityType">Entity type</div>
+                    <div class="audit-trail-card__value">{{ row.EntityType }}</div>
+                  </div>
+                  <div>
+                    <div class="audit-trail-card__label" i18n="@@jobseeker.admin.auditTrail.colField">Field</div>
+                    <div class="audit-trail-card__value">{{ row.Field }}</div>
+                  </div>
+                  <div>
+                    <div class="audit-trail-card__label" i18n="@@jobseeker.admin.auditTrail.colValue">Value</div>
+                    <div class="audit-trail-card__value truncate" [title]="row.Value">{{ row.Value }}</div>
+                  </div>
+                  <div>
+                    <div class="audit-trail-card__label" i18n="@@jobseeker.admin.auditTrail.colUpdatedBy">Updated by</div>
+                    <div class="audit-trail-card__value font-mono">{{ row.UpdatedByUserId || '—' }}</div>
+                  </div>
+                  <div>
+                    <div class="audit-trail-card__label" i18n="@@jobseeker.admin.auditTrail.colValidFrom">Valid from</div>
+                    <div class="audit-trail-card__value">{{ formatDate(row.ValidFrom) }}</div>
+                  </div>
+                  <div>
+                    <div class="audit-trail-card__label" i18n="@@jobseeker.admin.auditTrail.colValidTo">Valid to</div>
+                    <div class="audit-trail-card__value">{{ row.ValidTo ? formatDate(row.ValidTo) : stillCurrentLabel }}</div>
+                  </div>
+                </div>
+              </article>
+            }
+          </div>
+        }
+      </div>
+
+      <div class="table-responsive hidden lg:block">
+        <table class="audit-trail-table">
+          <thead>
+            <tr>
+              <th i18n="@@jobseeker.common.rowNumber">#</th>
+              <th i18n="@@jobseeker.admin.auditTrail.colEntityType">Entity type</th>
+              <th i18n="@@jobseeker.admin.auditTrail.colEntityReference">Entity reference</th>
+              <th i18n="@@jobseeker.admin.auditTrail.colField">Field</th>
+              <th i18n="@@jobseeker.admin.auditTrail.colValue">Value</th>
+              <th i18n="@@jobseeker.admin.auditTrail.colValidFrom">Valid from</th>
+              <th i18n="@@jobseeker.admin.auditTrail.colValidTo">Valid to</th>
+              <th i18n="@@jobseeker.admin.auditTrail.colUpdatedBy">Updated by</th>
+              <th i18n="@@jobseeker.admin.auditTrail.colSource">Source</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (row of historyRows(); track trackHistory($index, row); let i = $index) {
+              <tr>
+                <td>{{ safePageIndex() * pageSize() + i + 1 }}</td>
+                <td>{{ row.EntityType }}</td>
+                <td class="font-mono text-sm">{{ row.EntityReference }}</td>
+                <td>{{ row.Field }}</td>
+                <td class="max-w-[12rem] truncate" [title]="row.Value">{{ row.Value }}</td>
+                <td class="whitespace-nowrap">{{ formatDate(row.ValidFrom) }}</td>
+                <td class="whitespace-nowrap">{{ row.ValidTo ? formatDate(row.ValidTo) : stillCurrentLabel }}</td>
+                <td class="font-mono text-sm">{{ row.UpdatedByUserId || '—' }}</td>
+                <td>{{ row.Source }}</td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="9" class="py-6 text-center text-white-dark" i18n="@@jobseeker.common.noRecords">No records</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+
+    <div class="audit-trail-pager">
+      <span class="audit-trail-pager__summary">{{ pageFooterLabel() }}</span>
+      <div class="audit-trail-pager__controls">
+        <label class="audit-trail-pager__size">
+          <span i18n="@@jobseeker.jobsList.perPage">Per page</span>
+          <select
+            class="form-select audit-trail-pager__select"
+            [value]="pageSize()"
+            (change)="setPageSize(+$any($event.target).value)"
+          >
+            @for (s of pageSizeOptions; track s) {
+              <option [value]="s">{{ s }}</option>
+            }
+          </select>
+        </label>
+        <button
+          type="button"
+          class="btn btn-outline-primary btn-sm audit-trail-pager__nav"
+          [disabled]="!canPrev()"
+          (click)="prevPage()"
+          aria-label="Prev"
+          i18n-aria-label="@@jobseeker.common.prev"
+        >
+          &lt;
+        </button>
+        <span class="audit-trail-pager__page audit-trail-pager__page--active">{{ safePageIndex() + 1 }}</span>
+        <button
+          type="button"
+          class="btn btn-outline-primary btn-sm audit-trail-pager__nav"
+          [disabled]="!canNext()"
+          (click)="nextPage()"
+          aria-label="Next"
+          i18n-aria-label="@@jobseeker.common.next"
+        >
+          &gt;
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+@if (drawerOpen()) {
+  <div class="fixed inset-0 z-[999] flex justify-end bg-[black]/60" (click)="closeDrawer()">
+    <aside
+      role="dialog"
+      aria-modal="true"
+      class="flex h-full w-full max-w-lg flex-col bg-white shadow-2xl dark:bg-[#0e1726]"
+      (click)="$event.stopPropagation()"
+    >
+      <div class="shrink-0 border-b border-white-light px-4 py-4 dark:border-[#191e3a]">
+        <h2 class="text-center text-lg font-bold text-primary" i18n="@@jobseeker.jobSeekerSearch.advancedTitle">
+          Advanced filters
+        </h2>
+      </div>
+
+      <div class="min-h-0 flex-1 space-y-5 overflow-y-auto bg-white p-4 dark:bg-[#0e1726] sm:p-5">
+        <section>
+          <h3 class="audit-trail-adv-section-title">
+            <span class="audit-trail-adv-section-title__bar" aria-hidden="true"></span>
+            <span i18n="@@jobseeker.admin.auditTrail.filterEntityType">Entity type</span>
+          </h3>
+          <div class="space-y-3">
+            <div>
+              <label class="mb-1 block text-sm" i18n="@@jobseeker.admin.auditTrail.filterModule">Module</label>
+              <select class="form-select" [ngModel]="filterModule()" (ngModelChange)="setModule($event)">
+                @for (m of moduleOptions; track m.value) {
+                  <option [value]="m.value">{{ moduleLabel(m) }}</option>
+                }
+              </select>
+            </div>
+            <div>
+              <label class="mb-1 block text-sm" i18n="@@jobseeker.admin.auditTrail.filterEntityType">Entity type</label>
+              <select class="form-select" [ngModel]="filterEntityType()" (ngModelChange)="setEntityType($event)">
+                @for (e of entityTypeOptions(); track e.value) {
+                  <option [value]="e.value">{{ entityTypeLabel(e) }}</option>
+                }
+              </select>
+            </div>
+            <div>
+              <label class="mb-1 block text-sm" i18n="@@jobseeker.admin.auditTrail.filterEntityReference"
+                >Entity reference</label
+              >
+              <input
+                class="form-input"
+                [ngModel]="filterEntityReference()"
+                (ngModelChange)="filterEntityReference.set($event)"
+                (keydown.enter)="applyDrawer()"
+                placeholder="IR-3722"
+              />
+            </div>
+          </div>
+        </section>
+
+        <section>
+          <h3 class="audit-trail-adv-section-title">
+            <span class="audit-trail-adv-section-title__bar" aria-hidden="true"></span>
+            <span i18n="@@jobseeker.admin.auditTrail.filterField">Field</span>
+          </h3>
+          <div class="space-y-3">
+            <div>
+              <label class="mb-1 block text-sm" i18n="@@jobseeker.admin.auditTrail.filterField">Field</label>
+              <input
+                class="form-input"
+                [ngModel]="filterField()"
+                (ngModelChange)="filterField.set($event)"
+                (keydown.enter)="applyDrawer()"
+              />
+            </div>
+            <div>
+              <label class="mb-1 block text-sm" i18n="@@jobseeker.admin.auditTrail.filterValue">Value</label>
+              <input
+                class="form-input"
+                [ngModel]="filterValue()"
+                (ngModelChange)="filterValue.set($event)"
+                (keydown.enter)="applyDrawer()"
+              />
+            </div>
+          </div>
+        </section>
+
+        @if (viewMode() === 'changes') {
+          <section>
+            <h3 class="audit-trail-adv-section-title">
+              <span class="audit-trail-adv-section-title__bar" aria-hidden="true"></span>
+              <span i18n="@@jobseeker.admin.auditTrail.filterAction">Action</span>
+            </h3>
+            <div class="space-y-3">
+              <div>
+                <label class="mb-1 block text-sm" i18n="@@jobseeker.admin.auditTrail.filterAction">Action</label>
+                <select class="form-select" [ngModel]="filterAction()" (ngModelChange)="filterAction.set($event)">
+                  <option value="" i18n="@@jobseeker.common.all">All</option>
+                  <option value="Create">Create</option>
+                  <option value="Update">Update</option>
+                  <option value="Delete">Delete</option>
+                </select>
+              </div>
+              <div>
+                <label class="mb-1 block text-sm" i18n="@@jobseeker.admin.auditTrail.filterSource">Source</label>
+                <select class="form-select" [ngModel]="filterSource()" (ngModelChange)="filterSource.set($event)">
+                  <option value="" i18n="@@jobseeker.common.all">All</option>
+                  <option value="UI">UI</option>
+                  <option value="Scheduler">Scheduler</option>
+                </select>
+              </div>
+              <div>
+                <label class="mb-1 block text-sm" i18n="@@jobseeker.admin.auditTrail.filterUpdatedBy"
+                  >Updated by (user id)</label
+                >
+                <input
+                  class="form-input"
+                  [ngModel]="filterUpdatedBy()"
+                  (ngModelChange)="filterUpdatedBy.set($event)"
+                  (keydown.enter)="applyDrawer()"
+                />
+              </div>
+            </div>
+          </section>
+        }
+
+        <section>
+          <h3 class="audit-trail-adv-section-title">
+            <span class="audit-trail-adv-section-title__bar" aria-hidden="true"></span>
+            <span i18n="@@jobseeker.admin.auditTrail.filterFrom">From</span>
+          </h3>
+          <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
+            <div>
+              <label class="mb-1 block text-sm" i18n="@@jobseeker.admin.auditTrail.filterFrom">From</label>
+              <input
+                type="datetime-local"
+                class="form-input"
+                [ngModel]="filterUpdatedFrom()"
+                (ngModelChange)="filterUpdatedFrom.set($event)"
+              />
+            </div>
+            <div>
+              <label class="mb-1 block text-sm" i18n="@@jobseeker.admin.auditTrail.filterTo">To</label>
+              <input
+                type="datetime-local"
+                class="form-input"
+                [ngModel]="filterUpdatedTo()"
+                (ngModelChange)="filterUpdatedTo.set($event)"
+              />
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <div
+        class="flex shrink-0 flex-wrap items-center justify-end gap-2 border-t border-white-light bg-white px-4 py-3 dark:border-[#191e3a] dark:bg-[#0e1726] rtl:flex-row-reverse"
+      >
+        <button type="button" class="btn btn-primary btn-sm" (click)="applyDrawer()" i18n="@@jobseeker.jobSeekerSearch.apply">
+          Apply
+        </button>
+        <button
+          type="button"
+          class="btn btn-outline-danger btn-sm px-2.5 py-1 text-xs"
+          (click)="clearDrawerFilters()"
+          i18n="@@jobseeker.jobSeekerSearch.clear"
+        >
+          Clear
+        </button>
+        <button type="button" class="btn btn-outline-primary btn-sm" (click)="closeDrawer()" i18n="@@jobseeker.common.cancel">
+          Cancel
+        </button>
+      </div>
+    </aside>
+  </div>
+}

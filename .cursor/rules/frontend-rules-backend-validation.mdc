@@ -1,0 +1,27 @@
+---
+description: Any business rule or validation added on the frontend must also be enforced on the .NET backend.
+alwaysApply: true
+---
+
+# Frontend rules → backend validation
+
+When the user asks for a **business rule, guard, or validation** on the JobseekerModule frontend (hide/disable actions, block navigation, form checks, progress/status gates, etc.), **also implement the same rule on the Bidding_* API** in the same change.
+
+## Do
+
+- Enforce the rule in the appropriate **service / repository / mutation guard** so clients cannot bypass the UI.
+- Prefer shared helpers next to existing guards (e.g. `InterviewRecordMutationGuard`, lifecycle/readiness helpers) when the domain already has one.
+- Return a clear **BadRequest** (or existing conflict pattern) with a user-facing message aligned with the UI intent.
+- Keep exceptions that the product still needs (e.g. allow Send Results when edit is blocked) explicit in both layers.
+
+## Do not
+
+- Ship UI-only enforcement and leave the API open to the same mutation.
+- Assume “frontend already blocks it” is enough for security or data integrity.
+
+## Example
+
+User: “If progress is 100%, don’t allow edit.”
+
+- Frontend: hide Edit / redirect edit page.
+- Backend: reject `PUT …/records/{id}` (and save-and-resend) when all scheduled seats are resolved, unless the call is an allowed completion transition (Send Results).

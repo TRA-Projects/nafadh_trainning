@@ -1,0 +1,47 @@
+---
+description: Backend-backed actions — HttpClient to real API, then NgRx
+globs: JobseekerModule/**/*.ts
+alwaysApply: false
+---
+
+# HTTP and NgRx (JobseekerModule)
+
+## Goal
+
+Use **one** HTTP-facing service per domain. **Any user or system action that needs a backend must go through `HttpClient` to the real API first** — never “fake” the mutation by dispatching straight to the store. After a successful response, **persist into NgRx** (returned entity, upsert, or refetch + `cacheRows`).
+
+See `real-api-implementation.mdc` — mock interceptor work is out of scope unless explicitly requested.
+
+## Pattern
+
+1. **Backend** (`Bidding_API` / `Bidding_Core`): implement the route, service, and DTOs. Self-service jobseeker routes use profile id from the JWT, not the URL.
+
+2. **Frontend API layer** (`api-paths.ts`, `*ApiService`): inject `HttpClient` (+ `Store` when dispatching from the service). **Mutations:** perform **POST / PUT / PATCH / DELETE**, then update the store by either:
+   - **`tap` → dispatch** with the response payload (upsert/remove/cache), or
+   - **`switchMap` → GET list/detail** then dispatch **`cacheRows`** / equivalent so the list matches the server.
+
+   Do **not** update the store for that mutation until HTTP succeeds (no optimistic-only dispatches that replace the server path).
+
+3. **NgRx**: one **flat feature folder** per domain under `src/app/core/store/<feature>/`. See `ngrx-store-layout.mdc`.
+
+4. **UI**: trigger work through the **HTTP service** (or effects that call it). Read authoritative rows from **selectors** / `createFeature`, not parallel client-only copies of server data.
+
+5. **Logout**: dispatch the feature’s **clear cache** action next to other domain clears in `AuthService` where applicable.
+
+## New module checklist
+
+When adding a feature that loads or mutates server data:
+
+1. Add backend endpoint + service in `Bidding_*`.
+2. Add `ApiPaths` entry and `*ApiService` method(s).
+3. Add `core/store/<feature>/` slice (state, `createActionGroup`, `createFeature` reducer).
+4. Register **`provideState(...)`** in `app.config.ts`.
+5. Wire **mutations** in the HTTP layer: **call API → then** dispatch / refetch-and-cache.
+6. Wire **UI** from `store.select` / generated selectors.
+7. On **logout**, **`clearCache`** for that slice in `AuthService` if the slice holds user-scoped data.
+
+## Do not
+
+- Dispatch store-only “recorded / updated” actions for backend-backed behavior **without** a preceding successful HTTP call.
+- Branch UI on `useMockBackend` for data shape or behavior.
+- Keep duplicate authoritative state only in components when the same data belongs in the store after HTTP.

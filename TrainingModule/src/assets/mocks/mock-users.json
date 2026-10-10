@@ -1,0 +1,348 @@
+{
+  "users": [
+    {
+      "id": "mock-jobseeker-1",
+      "email": "jobseeker@mock.local",
+      "displayName": "Ahmad Al-Mutairi",
+      "role": "jobSeeker",
+      "vendorTypeId": 1,
+      "profileTypeId": 1,
+      "profileCompletionPending": false,
+      "profile": {
+        "profileId": 101,
+        "displayName": "Ahmad Al-Mutairi",
+        "locale": "en",
+        "vendorTypeId": 1,
+        "profileTypeId": 1,
+        "headline": "Software developer"
+      }
+    },
+    {
+      "id": "mock-operator-1",
+      "email": "operator@mock.local",
+      "displayName": "Mock Corp — Operator",
+      "role": "operator",
+      "vendorTypeId": 4,
+      "profileTypeId": 4,
+      "profileCompletionPending": false,
+      "profile": {
+        "profileId": 201,
+        "displayName": "Mock Corp — Operator",
+        "locale": "en",
+        "vendorTypeId": 4,
+        "profileTypeId": 4,
+        "organizationName": "Mock Corp",
+        "organizationNameAr": "موك كورب",
+        "headline": "Company operator"
+      }
+    },
+    {
+      "id": "mock-operator-2",
+      "email": "operator2@mock.local",
+      "displayName": "Gulf Systems — Operator",
+      "role": "operator",
+      "vendorTypeId": 4,
+      "profileTypeId": 4,
+      "profileCompletionPending": false,
+      "profile": {
+        "profileId": 202,
+        "displayName": "Gulf Systems",
+        "locale": "en",
+        "vendorTypeId": 4,
+        "profileTypeId": 4,
+        "organizationName": "Gulf Systems",
+        "organizationNameAr": "جلف سيستمز",
+        "headline": "Digital transformation services",
+        "phone": "+968 9555 2202",
+        "registrationCityId": 2,
+        "CrNumber": "22002002",
+        "Website": "https://gulfsystems.example",
+        "About": "<p>Enterprise systems integrator focused on government and telecom sectors.</p>",
+        "MissionVision": "<p>Build secure, scalable public digital services.</p>",
+        "ServicesOffered": [{ "Id": 5 }, { "Id": 45 }],
+        "SocialProfiles": [
+          { "Id": 1, "SocialProfileName": "linkedin", "SocialProfileUrl": "https://linkedin.com/company/gulf-systems" }
+        ]
+      }
+    },
+    {
+      "id": "mock-operator-3",
+      "email": "operator3@mock.local",
+      "displayName": "Desert Analytics — Operator",
+      "role": "operator",
+      "vendorTypeId": 4,
+      "profileTypeId": 4,
+      "profileCompletionPending": false,
+      "profile": {
+        "profileId": 203,
+        "displayName": "Desert Analytics",
+        "locale": "en",
+        "vendorTypeId": 4,
+        "profileTypeId": 4,
+        "organizationName": "Desert Analytics",
+        "organizationNameAr": "ديزرت أناليتكس",
+        "headline": "Data and AI consulting",
+        "phone": "+968 9555 2203",
+        "registrationCityId": 3,
+        "CrNumber": "22002003",
+        "Website": "https://desertanalytics.example",
+        "About": "<p>Specialized in analytics, BI, and AI enablement programs.</p>",
+        "MissionVision": "<p>Turn data into measurable business outcomes.</p>",
+        "ServicesOffered": [{ "Id": 45 }],
+        "SocialProfiles": [
+          { "Id": 1, "SocialProfileName": "linkedin", "SocialProfileUrl": "https://linkedin.com/company/desert-analytics" }
+        ]
+      }
+    },
+    {
+      "id": "mock-sme-1",
+      "email": "sme1@mock.local",
+      "displayName": "Al Noor Solutions",
+      "role": "operator",
+      "vendorTypeId": 2,
+      "profileTypeId": 2,
+      "profileCompletionPending": false,
+      "profile": {
+        "profileId": 204,
+        "displayName": "Al Noor Solutions",
+        "locale": "en",
+        "vendorTypeId": 2,
+        "profileTypeId": 2,
+        "organizationName": "Al Noor Solutions",
+        "organizationNameAr": "حلول النور",
+        "headline": "SME technology services",
+        "phone": "+968 9555 2204",
+        "registrationCityId": 4,
+        "CrNumber": "33003004",
+        "Website": "https://alnoor.example",
+        "About": "<p>SME delivering managed IT and support services.</p>",
+        "MissionVision": "<p>Reliable technology partnerships for growing businesses.</p>",
+        "ServicesOffered": [{ "Id": 5 }],
+        "SocialProfiles": [
+          { "Id": 1, "SocialProfileName": "linkedin", "SocialProfileUrl": "https://linkedin.com/company/al-noor-solutions" }
+        ]
+      }
+    },
+    {
+      "id": "mock-admin-1",
+      "email": "admin@mock.local",
+      "displayName": "Platform Admin",
+      "role": "admin",
+      "vendorTypeId": 0,
+      "profileTypeId": 0,
+      "profileCompletionPending": false,
+      "profile": {
+        "profileId": 1,
+        "displayName": "Platform Admin",
+        "locale": "en",
+        "vendorTypeId": 0,
+        "profileTypeId": 0,
+        "headline": "Administrator"
+      }
+    },
+    {
+      "id": "mock-portal-seeker-501",
+      "email": "aisha@mock.local",
+      "displayName": "Aisha Al-Saadi",
+      "role": "jobSeeker",
+      "vendorTypeId": 1,
+      "profileTypeId": 1,
+      "profileCompletionPending": false,
+      "profile": {
+        "profileId": 501,
+        "displayName": "Aisha Al-Saadi",
+        "locale": "en",
+        "vendorTypeId": 1,
+        "profileTypeId": 1,
+        "headline": "Software Engineering graduate"
+      }
+    },
+    {
+      "id": "mock-portal-seeker-502",
+      "email": "khalid@mock.local",
+      "displayName": "Khalid Al-Balushi",
+      "role": "jobSeeker",
+      "vendorTypeId": 1,
+      "profileTypeId": 1,
+      "profileCompletionPending": false,
+      "profile": {
+        "profileId": 502,
+        "displayName": "Khalid Al-Balushi",
+        "locale": "en",
+        "vendorTypeId": 1,
+        "profileTypeId": 1,
+        "headline": "Data Analytics student"
+      }
+    },
+    {
+      "id": "mock-portal-seeker-503",
+      "email": "maryam@mock.local",
+      "displayName": "Maryam Al-Harthi",
+      "role": "jobSeeker",
+      "vendorTypeId": 1,
+      "profileTypeId": 1,
+      "profileCompletionPending": false,
+      "profile": {
+        "profileId": 503,
+        "displayName": "Maryam Al-Harthi",
+        "locale": "en",
+        "vendorTypeId": 1,
+        "profileTypeId": 1,
+        "headline": "Information Systems"
+      }
+    },
+    {
+      "id": "mock-portal-seeker-504",
+      "email": "salim@mock.local",
+      "displayName": "Salim Al-Rawahi",
+      "role": "jobSeeker",
+      "vendorTypeId": 1,
+      "profileTypeId": 1,
+      "profileCompletionPending": false,
+      "profile": {
+        "profileId": 504,
+        "displayName": "Salim Al-Rawahi",
+        "locale": "en",
+        "vendorTypeId": 1,
+        "profileTypeId": 1,
+        "headline": "Computer Science"
+      }
+    },
+    {
+      "id": "mock-portal-seeker-505",
+      "email": "fatima@mock.local",
+      "displayName": "Fatima Al-Lawati",
+      "role": "jobSeeker",
+      "vendorTypeId": 1,
+      "profileTypeId": 1,
+      "profileCompletionPending": false,
+      "profile": {
+        "profileId": 505,
+        "displayName": "Fatima Al-Lawati",
+        "locale": "en",
+        "vendorTypeId": 1,
+        "profileTypeId": 1,
+        "headline": "Quality Assurance"
+      }
+    },
+    {
+      "id": "mock-portal-seeker-506",
+      "email": "omar@mock.local",
+      "displayName": "Omar Al-Habsi",
+      "role": "jobSeeker",
+      "vendorTypeId": 1,
+      "profileTypeId": 1,
+      "profileCompletionPending": false,
+      "profile": {
+        "profileId": 506,
+        "displayName": "Omar Al-Habsi",
+        "locale": "en",
+        "vendorTypeId": 1,
+        "profileTypeId": 1,
+        "headline": "Software Engineering student"
+      }
+    },
+    {
+      "id": "mock-portal-seeker-507",
+      "email": "layla@mock.local",
+      "displayName": "Layla Al-Maskari",
+      "role": "jobSeeker",
+      "vendorTypeId": 1,
+      "profileTypeId": 1,
+      "profileCompletionPending": false,
+      "profile": {
+        "profileId": 507,
+        "displayName": "Layla Al-Maskari",
+        "locale": "en",
+        "vendorTypeId": 1,
+        "profileTypeId": 1,
+        "headline": "Business Analytics"
+      }
+    },
+    {
+      "id": "mock-portal-seeker-508",
+      "email": "ahmed@mock.local",
+      "displayName": "Ahmed Al-Riyami",
+      "role": "jobSeeker",
+      "vendorTypeId": 1,
+      "profileTypeId": 1,
+      "profileCompletionPending": false,
+      "profile": {
+        "profileId": 508,
+        "displayName": "Ahmed Al-Riyami",
+        "locale": "en",
+        "vendorTypeId": 1,
+        "profileTypeId": 1,
+        "headline": "Computer Engineering"
+      }
+    },
+    {
+      "id": "mock-portal-seeker-509",
+      "email": "noor@mock.local",
+      "displayName": "Noor Al-Busaidi",
+      "role": "jobSeeker",
+      "vendorTypeId": 1,
+      "profileTypeId": 1,
+      "profileCompletionPending": false,
+      "profile": {
+        "profileId": 509,
+        "displayName": "Noor Al-Busaidi",
+        "locale": "en",
+        "vendorTypeId": 1,
+        "profileTypeId": 1,
+        "headline": "Interaction Design"
+      }
+    },
+    {
+      "id": "mock-portal-seeker-510",
+      "email": "youssef@mock.local",
+      "displayName": "Youssef Al-Kharusi",
+      "role": "jobSeeker",
+      "vendorTypeId": 1,
+      "profileTypeId": 1,
+      "profileCompletionPending": false,
+      "profile": {
+        "profileId": 510,
+        "displayName": "Youssef Al-Kharusi",
+        "locale": "en",
+        "vendorTypeId": 1,
+        "profileTypeId": 1,
+        "headline": "Information Technology"
+      }
+    },
+    {
+      "id": "mock-cm-seeker-sara-511",
+      "email": "sara.cm@mock.local",
+      "displayName": "Sara",
+      "role": "jobSeeker",
+      "vendorTypeId": 1,
+      "profileTypeId": 1,
+      "profileCompletionPending": false,
+      "profile": {
+        "profileId": 511,
+        "displayName": "Sara",
+        "locale": "en",
+        "vendorTypeId": 1,
+        "profileTypeId": 1,
+        "headline": "Credential management assessments"
+      }
+    },
+    {
+      "id": "mock-cm-seeker-khalid-512",
+      "email": "khalid.cm@mock.local",
+      "displayName": "Khalid",
+      "role": "jobSeeker",
+      "vendorTypeId": 1,
+      "profileTypeId": 1,
+      "profileCompletionPending": false,
+      "profile": {
+        "profileId": 512,
+        "displayName": "Khalid",
+        "locale": "en",
+        "vendorTypeId": 1,
+        "profileTypeId": 1,
+        "headline": "Credential management assessments"
+      }
+    }
+  ]
+}

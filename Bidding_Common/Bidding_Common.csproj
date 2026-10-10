@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Bidding_Models\Bidding_Models.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- UAT-07 Final Profile Polish — same NLog version already resolved by Bidding_API, so
+         SafeExecutionHelper's catch-all can log through the app's real, file-persisted logger
+         (matching Bidding_API.ExceptionHandler.LoggerManager's own NLog.LogManager pattern)
+         instead of the throwaway console-only Microsoft.Extensions.Logging instance it used
+         before. -->
+    <PackageReference Include="NLog" Version="4.7.2" />
+  </ItemGroup>
+
+</Project>

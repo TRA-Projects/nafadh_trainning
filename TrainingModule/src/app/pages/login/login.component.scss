@@ -1,0 +1,110 @@
+:host {
+  display: block;
+  min-height: 100vh;
+  background: transparent;
+}
+
+.login-page {
+  box-sizing: border-box;
+  display: flex;
+  min-height: 100vh;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  padding: 1.5rem 1rem;
+  overflow-x: hidden;
+}
+
+@media (min-width: 640px) {
+  .login-page {
+    padding: 2.5rem 1.5rem;
+  }
+}
+
+/* Chrome matches Admin dashboard white chart panels
+ * (`dashboard-chart-panel` / `.admin-dash-chart-panel--white`). */
+.login-card {
+  box-sizing: border-box;
+  position: relative;
+  width: 100%;
+  max-width: 500px;
+  padding: 1.5rem 1.25rem;
+  overflow: hidden;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.06);
+}
+
+.login-card::before {
+  content: '';
+  position: absolute;
+  inset-inline: 0;
+  top: 0;
+  z-index: 1;
+  height: 3px;
+  pointer-events: none;
+  background: linear-gradient(90deg, #00e1f5 0%, #00338d 100%);
+}
+
+@media (min-width: 640px) {
+  .login-card {
+    padding: 2rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .login-card {
+    padding: 2.75rem;
+  }
+}
+
+.login-card__lang {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 0.75rem;
+}
+
+.login-card h1 {
+  font-size: 1.9375rem;
+}
+
+@media (min-width: 768px) {
+  .login-card h1 {
+    font-size: 2.5rem;
+  }
+}
+
+.login-card h1 + p {
+  margin-top: 0.5rem;
+}
+
+.login-card .mb-8 {
+  margin-bottom: 1.75rem;
+}
+
+.login-card form {
+  margin-top: 0;
+}
+
+.login-card .mt-8 {
+  margin-top: 1.75rem;
+}
+
+.login-card .form-input,
+.login-card .btn-gradient {
+  width: 100%;
+  min-height: 2.75rem;
+}
+
+.required-label.is-required::after {
+  content: ' *';
+  color: #e7515a;
+}
+
+.form-input.form-input-locked {
+  cursor: not-allowed;
+  background-color: #eef2f9;
+  color: #0e172a;
+  border-color: #dbeafe;
+}

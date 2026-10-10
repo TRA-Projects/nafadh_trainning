@@ -1,0 +1,196 @@
+{
+  "locale": {
+    "toggleToArabic": "عربي",
+    "toggleToEnglish": "EN"
+  },
+  "uiAsync": {
+    "pleaseWait": "يرجى الانتظار…",
+    "done": "تم.",
+    "genericError": "حدث خطأ ما."
+  },
+  "login": {
+    "title": "تسجيل الدخول",
+    "subtitle": "أدخل بريدك الإلكتروني وكلمة المرور لتسجيل الدخول",
+    "email": "البريد الإلكتروني",
+    "password": "كلمة المرور",
+    "emailPlaceholder": "email@example.com",
+    "forgotPassword": "نسيت كلمة المرور؟",
+    "submit": "تسجيل الدخول",
+    "noAccount": "ليس لديك حساب؟",
+    "register": "تسجيل"
+  },
+  "nav": {
+    "dashboard": "لوحة التحكم",
+    "jobs": "الوظائف",
+    "findJobs": "بحث عن وظائف",
+    "savedJobs": "وظائف محفوظة",
+    "profile": "الملف الشخصي",
+    "completeProfile": "إكمال الملف",
+    "myProfile": "ملفي",
+    "myApplications": "طلباتي",
+    "appliedJobs": "وظائف مقدَّمة",
+    "history": "السجل",
+    "messages": "الرسائل",
+    "settings": "الإعدادات",
+    "support": "الدعم"
+  },
+  "page": {
+    "dashboard": "لوحة التحكم",
+    "findJobs": "بحث عن وظائف",
+    "savedJobs": "وظائف محفوظة",
+    "myProfile": "ملفي",
+    "appliedJobs": "وظائف مقدَّمة",
+    "applicationHistory": "سجل الطلبات",
+    "messages": "الرسائل",
+    "settings": "الإعدادات",
+    "support": "الدعم"
+  },
+  "header": {
+    "signOut": "تسجيل الخروج",
+    "userFallback": "مستخدم"
+  },
+  "footer": {
+    "line": "© {{year}}. نافذ — الباحث عن عمل"
+  },
+  "a11y": {
+    "toggleSidebar": "طي القائمة الجانبية",
+    "openMenu": "فتح القائمة",
+    "profileAvatar": "الملف الشخصي"
+  },
+  "brand": {
+    "nafadh": "نافذ"
+  },
+  "profileCompletion": {
+    "breadcrumb": {
+      "users": "المستخدمون",
+      "accountSettings": "إعدادات الحساب"
+    },
+    "shell": {
+      "title": "إكمال الملف الشخصي",
+      "heading": "إكمال الملف الشخصي",
+      "subheading": "يرجى إكمال ملفك للوصول إلى جميع الميزات"
+    },
+    "general": {
+      "documentTitle": "المعلومات العامة — الملف",
+      "sectionTitle": "المعلومات العامة"
+    },
+    "portfolio": {
+      "documentTitle": "معرض الأعمال — الملف",
+      "sectionTitle": "تفاصيل معرض الأعمال",
+      "add": "إضافة",
+      "addPortfolio": "إضافة معرض أعمال",
+      "type": "نوع معرض الأعمال",
+      "titleField": "العنوان",
+      "enterTitle": "أدخل العنوان",
+      "sector": "القطاع",
+      "participationLabel": "المشاركة",
+      "cost": "التكلفة",
+      "duration": "المدة",
+      "description": "الوصف",
+      "enterCost": "أدخل التكلفة",
+      "enterDuration": "أدخل المدة",
+      "cancel": "إلغاء",
+      "saveItem": "إضافة",
+      "updateItem": "حفظ التغييرات",
+      "close": "إغلاق",
+      "loading": "جاري التحميل…",
+      "deleteConfirm": "حذف عنصر معرض الأعمال هذا؟",
+      "viewPortfolio": "عرض معرض الأعمال",
+      "editPortfolio": "تعديل معرض الأعمال",
+      "actions": {
+        "view": "عرض",
+        "edit": "تعديل",
+        "delete": "حذف"
+      },
+      "empty": "لا توجد عناصر بعد. استخدم «إضافة» لإنشاء عنصر (تجريبي فقط، لا يُحفظ على الخادم).",
+      "remove": "حذف",
+      "col": {
+        "sn": "م",
+        "title": "العنوان",
+        "type": "النوع",
+        "sector": "القطاع",
+        "participation": "المشاركة",
+        "cost": "التكلفة",
+        "duration": "المدة",
+        "description": "الوصف",
+        "actions": "إجراءات"
+      },
+      "types": {
+        "project": "مشروع",
+        "service": "خدمة",
+        "caseStudy": "دراسة حالة"
+      },
+      "sectors": {
+        "government": "حكومي",
+        "private": "خاص",
+        "personal": "شخصي",
+        "other": "أخرى"
+      },
+      "participation": {
+        "partial": "جزئي",
+        "full": "كامل",
+        "other": "أخرى"
+      }
+    },
+    "upload": "رفع",
+    "revert": "تراجع",
+    "fullName": "الاسم الكامل",
+    "civilId": "الرقم المدني",
+    "phone": "الهاتف",
+    "email": "البريد الإلكتروني",
+    "address": "العنوان",
+    "website": "الموقع الإلكتروني",
+    "enterUrl": "أدخل الرابط",
+    "biography": "السيرة الذاتية",
+    "servicesOffered": "نطاقات العمل",
+    "social": "اجتماعي",
+    "choose": "اختر...",
+    "saveAndContinue": "حفظ ومتابعة",
+    "back": "رجوع",
+    "emptyField": "—",
+    "services": {
+      "webDesign": "تصميم ويب",
+      "marketing": "تسويق",
+      "printing": "طباعة"
+    },
+    "cities": {
+      "muscat": "مسقط",
+      "salalah": "صلالة",
+      "sohar": "صحار"
+    },
+    "steps": {
+      "general": "عام",
+      "portfolio": "معرض الأعمال",
+      "education": "مؤهل أكاديمي",
+      "experience": "الخبرة",
+      "skills": "المهارات المهنية",
+      "certificates": "الشهادات",
+      "review": "مراجعة"
+    },
+    "education": {
+      "documentTitle": "مؤهل أكاديمي — الملف",
+      "sectionTitle": "تفاصيل المؤهل الأكاديمي",
+      "mockHint": "سيُضاف هنا تفاصيل المؤهل الأكاديمي (المؤسسات، الشهادات، التواريخ). خطوة تجريبية — لا حفظ على الخادم بعد."
+    },
+    "experience": {
+      "documentTitle": "الخبرة — الملف",
+      "sectionTitle": "تفاصيل مهنية",
+      "mockHint": "سيُضاف سجل العمل والخبرة هنا. يطابق «التفاصيل المهنية» في Freelancer. تجريبي فقط."
+    },
+    "skills": {
+      "documentTitle": "المهارات المهنية — الملف",
+      "sectionTitle": "المهارات المهنية",
+      "mockHint": "ستُضاف المهارات المهنية والكفاءات هنا. خطوة تجريبية — لا واجهة برمجية بعد."
+    },
+    "certificates": {
+      "documentTitle": "الشهادات — الملف",
+      "sectionTitle": "الشهادات والتراخيص",
+      "mockHint": "سيُضاف الشهادات والتراخيص هنا. يطابق خطوة الشهادات في Freelancer. تجريبي فقط."
+    },
+    "review": {
+      "documentTitle": "مراجعة الملف",
+      "sectionTitle": "مراجعة الملف الشخصي",
+      "mockHint": "ملخص ومراجعة قبل الإنهاء (مثل ProfileDetails). «حفظ ومتابعة» يذهب إلى لوحة التحكم."
+    }
+  }
+}

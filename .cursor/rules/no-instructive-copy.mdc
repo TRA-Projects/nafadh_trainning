@@ -1,0 +1,26 @@
+---
+description: No instructional/guiding sentences on pages — titles, labels, and validation only
+alwaysApply: true
+---
+
+# No instructive copy (JobseekerModule)
+
+Do **not** add guiding or instructional sentences on screens.
+
+## Forbidden
+
+- Intro / subtitle paragraphs under page titles (e.g. “Opportunities you have submitted…”, “Complete opportunity details step by step…”)
+- Helper blurbs above forms, tabs, tables, or embedded lists (e.g. “Complete the remaining details…”, “These candidates were nominated by…”, “Please complete your profile to unlock…”)
+- Step-by-step coaching copy next to tab headings
+
+## Allowed
+
+- Page / section / tab **titles** and field **labels**
+- Validation / error messages
+- Empty-state and load-error messages
+- Server-provided legal text (e.g. disclaimer body) when required by the flow
+- Auth/marketing copy on login & registration only when the product explicitly requires it
+
+## When editing existing screens
+
+Remove instructive intro/subtitle paragraphs rather than rewriting them. Keep the heading and the interactive content.

@@ -1,0 +1,16 @@
+{
+  "Data": {
+    "FullName": "Ahmad Al-Mutairi",
+    "Gender": "Male",
+    "Age": "32",
+    "DateOfBirth": "1993-05-12",
+    "Governorate": "Muscat",
+    "Wilayat": "Seeb",
+    "MaritalStatus": "Single",
+    "HealthStatus": "Good",
+    "SearcherStatus": "Active",
+    "JobSearchDuration": "3 months",
+    "DateOfFirstRegistrationAsJobSeeker": "2024-01-10",
+    "DateOfLastRegistrationAsJobSeeker": "2026-02-01"
+  }
+}

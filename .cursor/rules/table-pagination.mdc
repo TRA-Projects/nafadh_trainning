@@ -1,0 +1,107 @@
+---
+description: Always paginate tables (default 5, options 5/10/15) with row numbering and page params on the API call
+alwaysApply: true
+---
+
+# Table pagination & numbering (JobseekerModule)
+
+Every list/table the user can browse **must** be paginated and numbered. This applies to both new tables and any existing table being substantially refactored.
+
+## Required behavior
+
+1. **Pagination is mandatory.** Never render an unpaginated `@for` over a server-backed (or potentially large) list.
+2. **Default page size is 5.** Selectable options are **`5`, `10`, `15`**. Expose the size selector next to the pager.
+3. **Row numbering is mandatory.** First column is `#`. The number is **page-aware**:
+   `displayedNumber = pageIndex * pageSize + i + 1` (use `let i = $index` in the `@for`).
+4. **Server-driven paging.** The page index, page size (and any `query` / `sort` filters) are passed through the **HTTP service** to the real API. Do not slice on the client when there's an API path — the API call carries the page params and the store holds the paged slice.
+5. **Reset `pageIndex` to `0`** when filters, search, sort, or page size change.
+6. **Footer line:** show `Showing X–Y of Z` plus the **standard pager controls** inside the bordered table shell:
+   - **Per page** select (`5` / `10` / `15`)
+   - **`<` / current page number (highlighted) / `>`** (not text “Prev” / “Next” buttons)
+   - Disable `<` / `>` at boundaries
+7. **Do not regress existing tables.** When adding a feature near a non-paginated table, paginate it as part of the same change (or note it explicitly in chat).
+8. **Full list chrome** (search-on-change, filter/clear icons, table shell) — see `list-page-layout.mdc`.
+
+## Component skeleton (signals + computed)
+
+```ts
+const PAGE_SIZE_OPTIONS = [5, 10, 15] as const;
+type PageSize = (typeof PAGE_SIZE_OPTIONS)[number];
+
+readonly pageSize = signal<PageSize>(5);
+readonly pageIndex = signal(0);
+readonly pageSizeOptions = PAGE_SIZE_OPTIONS;
+
+readonly totalCount = computed(() => this.rows().length); // or from API
+readonly totalPages = computed(() => Math.max(1, Math.ceil(this.totalCount() / this.pageSize())));
+readonly safePageIndex = computed(() =>
+  Math.min(this.pageIndex(), Math.max(0, this.totalPages() - 1))
+);
+
+readonly pagedRows = computed(() => {
+  const size = this.pageSize();
+  const start = this.safePageIndex() * size;
+  return this.rows().slice(start, start + size); // server-paged: just `this.rows()`
+});
+
+readonly canPrev = computed(() => this.safePageIndex() > 0);
+readonly canNext = computed(() => this.safePageIndex() < this.totalPages() - 1);
+
+setPageSize(s: PageSize) { this.pageSize.set(s); this.pageIndex.set(0); /* refetch if API-paged */ }
+nextPage() { if (this.canNext()) this.pageIndex.update((p) => p + 1); /* refetch if API-paged */ }
+prevPage() { if (this.canPrev()) this.pageIndex.update((p) => p - 1); /* refetch if API-paged */ }
+```
+
+## Template skeleton
+
+```html
+<table>
+  <thead>
+    <tr>
+      <th>#</th>
+      <!-- other columns -->
+    </tr>
+  </thead>
+  <tbody>
+    @for (row of pagedRows(); track row.Id; let i = $index) {
+      <tr>
+        <td>{{ safePageIndex() * pageSize() + i + 1 }}</td>
+        <!-- other cells -->
+      </tr>
+    }
+  </tbody>
+</table>
+
+<div class="…-pager">
+  <span class="…-pager__summary">{{ pageFooterLabel() }}</span>
+  <div class="…-pager__controls">
+    <label class="…-pager__size">
+      <span i18n="@@jobseeker.jobsList.perPage">Per page</span>
+      <select class="form-select …-pager__select"
+              [value]="pageSize()"
+              (change)="setPageSize(+$any($event.target).value)">
+        @for (s of pageSizeOptions; track s) { <option [value]="s">{{ s }}</option> }
+      </select>
+    </label>
+    <button type="button" class="btn btn-outline-primary btn-sm …-pager__nav"
+            [disabled]="!canPrev()" (click)="prevPage()"
+            aria-label="Prev" i18n-aria-label="@@jobseeker.common.prev">&lt;</button>
+    <span class="…-pager__page …-pager__page--active">{{ safePageIndex() + 1 }}</span>
+    <button type="button" class="btn btn-outline-primary btn-sm …-pager__nav"
+            [disabled]="!canNext()" (click)="nextPage()"
+            aria-label="Next" i18n-aria-label="@@jobseeker.common.next">&gt;</button>
+  </div>
+</div>
+```
+
+Copy pager bar styles from an existing list (e.g. `.aer-pager` / `.dmv-pager` / `.ia-pager`): tinted footer strip, active page pill.
+## API + NgRx wiring (server-paged)
+
+- The HTTP service method takes `pageIndex` / `pageSize` (+ filters) and returns `{ rows, total }`.
+- Mock interceptor honors the same params (slice the in-memory list and return `total`).
+- After a successful response, dispatch into the slice (e.g. `cacheRows({ rows, total, pageIndex, pageSize })`); the table reads from selectors.
+- Refetch on **page change**, **size change**, **search/filter/sort change**, and after **mutations** that affect the list. See `http-store-sync.mdc`.
+
+## Bilingual labels
+
+Use `$localize` / `i18n` for "Prev", "Next", "Showing X–Y of Z", "Per page", and the `#` header tooltip if any. Keep the matching `messages.ar.json` entries in sync.

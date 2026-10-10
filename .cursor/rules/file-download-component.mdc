@@ -1,0 +1,43 @@
+---
+description: Use the shared download component for all file/attachment display
+alwaysApply: true
+---
+
+# File download display (JobseekerModule)
+
+When showing downloadable files or attachments anywhere in the UI — modals, detail pages, list views, popups — **always** use the shared `JobOpportunityAttachmentChipsComponent` (`<app-job-opportunity-attachment-chips>`).
+
+## Required
+
+1. **Import** `JobOpportunityAttachmentChipsComponent` and the `JobOpportunityAttachmentChip` type.
+2. **Build** a `JobOpportunityAttachmentChip[]` from whatever data model holds the files:
+
+```typescript
+const chip: JobOpportunityAttachmentChip = {
+  AttachmentName: file.fileName,
+  AttachmentType: file.type ?? 'document',
+  DataUrl: file.fileUrl ?? undefined,
+};
+```
+
+3. **Render** with the component (prefer `layout="stack"` in modals / detail panels):
+
+```html
+<app-job-opportunity-attachment-chips
+  [attachments]="attachmentChips()"
+  layout="stack"
+/>
+```
+
+## Do not
+
+- Render raw `<a href>` links for file downloads.
+- Write custom download buttons or icons — the shared component already handles the download icon, truncation, aria labels, and the actual Blob download logic.
+
+## Layout options
+
+| Value | Use when |
+|-------|----------|
+| `row` | Horizontal pill list (compact inline) |
+| `grid` | Responsive card grid |
+| `stack` | Full-width vertical chips — **default for modals and detail pages** |

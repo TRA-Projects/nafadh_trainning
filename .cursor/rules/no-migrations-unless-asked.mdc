@@ -1,0 +1,22 @@
+---
+description: Never generate EF Core / DB migrations unless the user explicitly asks
+alwaysApply: true
+---
+
+# No migrations unless asked
+
+**Never** create, scaffold, or run Entity Framework (or other) database migrations unless the user **explicitly** asks for a migration in that message.
+
+## Do
+
+- Update entities, DbContext, writers, mappers, DTOs, and seeders as needed for the feature.
+- If a schema change requires a migration, **stop and ask** the user before generating one (e.g. `dotnet ef migrations add …`).
+- Only generate/apply a migration after a clear request such as “create the migration” or “add a migration for X”.
+
+## Do not
+
+- Auto-generate migration `.cs` / `.Designer.cs` files as part of entity or feature work.
+- Run `dotnet ef migrations add` (or equivalent) proactively.
+- Assume “add NotesEn/NotesAr to the entity” implies “also create the migration”.
+
+When schema work is done and a migration is still needed, remind the user once that a migration is pending and wait for approval.

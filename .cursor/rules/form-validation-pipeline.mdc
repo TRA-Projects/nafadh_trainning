@@ -1,0 +1,33 @@
+---
+description: New forms must use @validators, ValidationMessagePipe, FormPipeline + AsyncExecutor
+alwaysApply: true
+---
+
+# Form validation and submit pipeline (JobseekerModule)
+
+**Normative detail:** `JobseekerModule/docs/DESIGN-GUIDE.md` sections **5** (async UI), **6** (validators & messages), **7** (form pipeline).
+
+## Always use for new or substantially refactored forms
+
+1. **Validators** — Prefer **`@validators`** (`AngularValidators`, shared `ValidatorFn`s, cross-field helpers). Avoid ad-hoc validation logic only in templates or `save()` unless the team explicitly chose a minimal path and documented why.
+
+2. **Error display** — Use **`ValidationMessagePipe`** on controls (`{{ control | validationMessage }}`) and stable error keys / `$localize` patterns from **`validation-messages.i18n.ts`**; keep **Arabic** `validation.*` entries in `messages.ar.json` in sync when adding messages.
+
+3. **Submit path** — Use **`FormPipelineService`** so that: touch + `updateValueAndValidity`, **`waitForAllAsyncValidators`**, optional server-side `asyncValidate`, then success path. Wire the actual HTTP/mutation with **`AsyncExecutorService.execute()`** (same pattern as **`PostJobPageComponent`**).
+
+4. **Loading / toasts** — Do not duplicate global loading; rely on **`AsyncExecutorService`** → NgRx **`ui-async`** for user-visible async feedback.
+
+5. **Required-field marker (`*`)** — Render required stars from the form model, not hardcoded per label:
+   - If a control has `required` validator, show `*`.
+   - If a control is optional, do not show optional helper copy by default.
+   - Keep this behavior consistent for new/edited forms.
+
+6. **Password guidance text** — Do not add inline password instruction paragraphs when validators already enforce rules. Show requirements through validation errors only.
+
+## Reference implementation
+
+- **`src/app/features/post-job/post-job-page/`** — full form, pipeline, executor, pipes.
+
+## Exceptions
+
+Only with explicit product/tech sign-off (e.g. legacy parity or a one-field dialog). Default for **new features** is full compliance with DESIGN-GUIDE §5–7.
