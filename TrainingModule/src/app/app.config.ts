@@ -20,6 +20,7 @@ import { adminSystemFeature } from './core/store/admin-system/admin-system.reduc
 import { registrationFeature } from './core/store/registration/registration.reducer';
 import { identityAccessFeature } from './core/store/identity-access/identity-access.reducer';
 import { notificationsFeature } from './core/store/notifications/notifications.reducer';
+import { showcaseFeature } from './core/store/showcase/showcase.reducer';
 import { AuthService } from './core/auth/auth.service';
 
 export const appConfig: ApplicationConfig = {
@@ -42,6 +43,7 @@ export const appConfig: ApplicationConfig = {
     provideState(registrationFeature),
     provideState(identityAccessFeature),
     provideState(notificationsFeature),
+    provideState(showcaseFeature),
     ...(isDevMode()
       ? [
           provideStoreDevtools({

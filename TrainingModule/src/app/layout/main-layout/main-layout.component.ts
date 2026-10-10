@@ -241,6 +241,7 @@ export class MainLayoutComponent {
       '/admin/audit-trail',
       '/admin/notification-transactions',
       '/admin/custom-notifications',
+      '/admin/showcase',
     ];
     if (systemAdminPrefixes.some((p) => path.startsWith(p))) {
       this.activeDropdown.set('admin-fsd-51');

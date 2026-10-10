@@ -121,6 +121,11 @@
                   ><span i18n="@@jobseeker.layout.nav.admin.customNotifications">Custom notifications</span></a
                 >
               </li>
+              <li>
+                <a routerLink="/admin/showcase" [hidden]="!canShow('/admin/showcase')" routerLinkActive="active" (click)="onNav()"
+                  ><span i18n="@@jobseeker.layout.nav.admin.showcase">UI showcase</span></a
+                >
+              </li>
             </ul>
           }
         </li>

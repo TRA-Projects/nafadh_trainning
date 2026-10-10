@@ -68,6 +68,10 @@ const customNotificationManagePage = () =>
   import('./features/admin/custom-notifications/custom-notification-manage-page.component').then(
     (m) => m.CustomNotificationManagePageComponent
   );
+const showcaseListPage = () =>
+  import('./features/admin/showcase/showcase-list-page.component').then((m) => m.ShowcaseListPageComponent);
+const showcaseFormPage = () =>
+  import('./features/admin/showcase/showcase-form-page.component').then((m) => m.ShowcaseFormPageComponent);
 const myNotificationsPage = () =>
   import('./features/notifications/my-notifications-page.component').then((m) => m.MyNotificationsPageComponent);
 
@@ -232,6 +236,21 @@ export const routes: Routes = [
             path: 'custom-notifications/:id',
             loadComponent: customNotificationManagePage,
             data: { title: 'Custom notification', titleAr: 'إشعار مخصص' },
+          },
+          {
+            path: 'showcase',
+            loadComponent: showcaseListPage,
+            data: { title: 'UI showcase', titleAr: 'نماذج الواجهة' },
+          },
+          {
+            path: 'showcase/new',
+            loadComponent: showcaseFormPage,
+            data: { title: 'New record', titleAr: 'سجل جديد' },
+          },
+          {
+            path: 'showcase/:id',
+            loadComponent: showcaseFormPage,
+            data: { title: 'UI showcase', titleAr: 'نماذج الواجهة' },
           },
         ],
       },

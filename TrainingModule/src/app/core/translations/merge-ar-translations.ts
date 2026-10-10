@@ -6,6 +6,7 @@ import loginAr from './login/messages.ar.json';
 import placeholderAr from './placeholder/messages.ar.json';
 import registrationAr from './registration/messages.ar.json';
 import customNotificationsAr from './custom-notifications/messages.ar.json';
+import showcaseAr from './showcase/messages.ar.json';
 import validationAr from './validation/messages.ar.json';
 
 function extractMap(data: unknown): Record<string, string> {
@@ -33,5 +34,6 @@ export function mergeArTranslations(): Record<string, string> {
     ...extractMap(adminSystemAr),
     ...extractMap(identityAccessAr),
     ...extractMap(customNotificationsAr),
+    ...extractMap(showcaseAr),
   };
 }

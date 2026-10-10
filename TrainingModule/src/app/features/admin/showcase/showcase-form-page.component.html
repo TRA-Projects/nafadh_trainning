@@ -1,0 +1,191 @@
+<div class="irf-page">
+  <div class="irf-page__header">
+    <app-back-arrow-button class="shrink-0" [to]="backToList" [iconOnly]="true" [ariaLabel]="backToListAria" />
+    <h2 class="irf-page__title">{{ pageTitle() }}</h2>
+  </div>
+
+  <div class="irf-card mt-6">
+    <div class="irf-banner bg-navigator">
+      <span class="irf-banner__icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+          <rect x="3" y="3" width="18" height="18" rx="2" />
+          <path d="M3 9h18M9 21V9" stroke-linecap="round" />
+        </svg>
+      </span>
+      <span class="irf-banner__title">{{ bannerTitle }}</span>
+    </div>
+
+    <div class="irf-card__body">
+      <form [formGroup]="form" (ngSubmit)="save()" class="space-y-6">
+        <section class="irf-section">
+          <h3 class="irf-section__title" i18n="@@jobseeker.showcase.sectionBasic">Basic information</h3>
+          <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+            <div>
+              <label class="irf-label irf-label--with-badge mb-1" for="scTitleEn">
+                <span>
+                  <span i18n="@@jobseeker.common.title">Title</span>
+                  @if (isRequired('Title_en')) {
+                    <span class="text-danger">*</span>
+                  }
+                </span>
+                <span class="irf-lang-badge">EN</span>
+              </label>
+              <input id="scTitleEn" class="form-input" dir="ltr" formControlName="Title_en" />
+              @if (form.controls.Title_en.invalid && form.controls.Title_en.touched) {
+                <span class="text-sm text-danger">{{ form.controls.Title_en | validationMessage }}</span>
+              }
+            </div>
+            <div>
+              <label class="irf-label irf-label--with-badge mb-1" for="scTitleAr">
+                <span>
+                  <span i18n="@@jobseeker.common.title">Title</span>
+                  @if (isRequired('Title_ar')) {
+                    <span class="text-danger">*</span>
+                  }
+                </span>
+                <span class="irf-lang-badge">AR</span>
+              </label>
+              <input id="scTitleAr" class="form-input" dir="rtl" formControlName="Title_ar" />
+              @if (form.controls.Title_ar.invalid && form.controls.Title_ar.touched) {
+                <span class="text-sm text-danger">{{ form.controls.Title_ar | validationMessage }}</span>
+              }
+            </div>
+            <div>
+              <label class="irf-label mb-1" for="scCategory">
+                <span i18n="@@jobseeker.showcase.category">Category</span>
+                @if (isRequired('Category')) {
+                  <span class="text-danger">*</span>
+                }
+              </label>
+              <select id="scCategory" class="form-select" formControlName="Category">
+                <option value="" i18n="@@jobseeker.common.select">Select</option>
+                @for (c of categories; track c) {
+                  <option [value]="c">{{ categoryLabel(c) }}</option>
+                }
+              </select>
+              @if (form.controls.Category.invalid && form.controls.Category.touched) {
+                <span class="text-sm text-danger">{{ form.controls.Category | validationMessage }}</span>
+              }
+            </div>
+            <div>
+              <label class="irf-label mb-1" for="scStatus">
+                <span i18n="@@jobseeker.showcase.status">Status</span>
+                @if (isRequired('Status')) {
+                  <span class="text-danger">*</span>
+                }
+              </label>
+              <select id="scStatus" class="form-select" formControlName="Status">
+                @for (s of statuses; track s) {
+                  <option [value]="s">{{ statusLabel(s) }}</option>
+                }
+              </select>
+              @if (form.controls.Status.invalid && form.controls.Status.touched) {
+                <span class="text-sm text-danger">{{ form.controls.Status | validationMessage }}</span>
+              }
+            </div>
+          </div>
+        </section>
+
+        <section class="irf-section">
+          <h3 class="irf-section__title" i18n="@@jobseeker.showcase.sectionContact">Contact</h3>
+          <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+            <div>
+              <label class="irf-label mb-1" for="scEmail">
+                <span i18n="@@jobseeker.showcase.contactEmail">Contact email</span>
+                @if (isRequired('ContactEmail')) {
+                  <span class="text-danger">*</span>
+                }
+              </label>
+              <input id="scEmail" type="email" class="form-input" dir="ltr" formControlName="ContactEmail" />
+              @if (form.controls.ContactEmail.invalid && form.controls.ContactEmail.touched) {
+                <span class="text-sm text-danger">{{ form.controls.ContactEmail | validationMessage }}</span>
+              }
+            </div>
+            <div>
+              <label class="irf-label mb-1" for="scPhone">
+                <span i18n="@@jobseeker.showcase.phoneNumber">Phone number</span>
+                @if (isRequired('PhoneNumber')) {
+                  <span class="text-danger">*</span>
+                }
+              </label>
+              <input id="scPhone" type="tel" class="form-input" dir="ltr" formControlName="PhoneNumber" />
+              @if (form.controls.PhoneNumber.invalid && form.controls.PhoneNumber.touched) {
+                <span class="text-sm text-danger">{{ form.controls.PhoneNumber | validationMessage }}</span>
+              }
+            </div>
+          </div>
+        </section>
+
+        <section class="irf-section">
+          <h3 class="irf-section__title" i18n="@@jobseeker.showcase.sectionAmountDates">Amount and dates</h3>
+          <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
+            <div>
+              <label class="irf-label mb-1" for="scAmount">
+                <span i18n="@@jobseeker.showcase.amount">Amount</span>
+                @if (isRequired('Amount')) {
+                  <span class="text-danger">*</span>
+                }
+              </label>
+              <input id="scAmount" type="number" min="1" class="form-input" dir="ltr" formControlName="Amount" />
+              @if (form.controls.Amount.invalid && form.controls.Amount.touched) {
+                <span class="text-sm text-danger">{{ form.controls.Amount | validationMessage }}</span>
+              }
+            </div>
+            <div>
+              <label class="irf-label mb-1" for="scStart">
+                <span i18n="@@jobseeker.showcase.startDate">Start date</span>
+                @if (isRequired('StartDate')) {
+                  <span class="text-danger">*</span>
+                }
+              </label>
+              <input id="scStart" type="date" class="form-input" formControlName="StartDate" />
+              @if (form.controls.StartDate.invalid && form.controls.StartDate.touched) {
+                <span class="text-sm text-danger">{{ form.controls.StartDate | validationMessage }}</span>
+              }
+            </div>
+            <div>
+              <label class="irf-label mb-1" for="scEnd">
+                <span i18n="@@jobseeker.showcase.endDate">End date</span>
+                @if (isRequired('EndDate')) {
+                  <span class="text-danger">*</span>
+                }
+              </label>
+              <input id="scEnd" type="date" class="form-input" formControlName="EndDate" />
+              @if (form.controls.EndDate.invalid && form.controls.EndDate.touched) {
+                <span class="text-sm text-danger">{{ form.controls.EndDate | validationMessage }}</span>
+              }
+            </div>
+          </div>
+          @if (form.errors && (form.controls.StartDate.touched || form.controls.EndDate.touched)) {
+            <span class="mt-1 block text-sm text-danger">{{ form.errors | validationMessage }}</span>
+          }
+          <label class="mt-4 inline-flex cursor-pointer items-center gap-2">
+            <input type="checkbox" class="form-checkbox" formControlName="IsUrgent" />
+            <span i18n="@@jobseeker.showcase.urgent">Urgent</span>
+          </label>
+        </section>
+
+        <section class="irf-section">
+          <h3 class="irf-section__title" i18n="@@jobseeker.common.description">Description</h3>
+          <textarea id="scDescription" class="form-textarea min-h-[120px]" formControlName="Description"></textarea>
+          @if (form.controls.Description.invalid && form.controls.Description.touched) {
+            <span class="text-sm text-danger">{{ form.controls.Description | validationMessage }}</span>
+          }
+        </section>
+
+        <div class="irf-actions">
+          @if (!readOnly()) {
+            <button type="submit" class="btn btn-primary" i18n="@@jobseeker.common.save">Save</button>
+          }
+          <button type="button" class="btn btn-outline-primary" (click)="cancel()">
+            @if (readOnly()) {
+              <span i18n="@@jobseeker.common.back">Back</span>
+            } @else {
+              <span i18n="@@jobseeker.common.cancel">Cancel</span>
+            }
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

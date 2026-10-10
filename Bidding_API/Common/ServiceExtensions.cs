@@ -38,6 +38,7 @@ namespace Bidding_API.Common
 
             services.AddScoped<INotificationDispatchService, NotificationDispatchService>();
             services.AddScoped<ICustomNotificationService, CustomNotificationService>();
+            services.AddSingleton<IShowcaseService, ShowcaseMockService>();
             services.AddScoped<INotificationTemplateRenderer, NotificationTemplateRenderer>();
             services.AddScoped<IAdminSystemService, AdminSystemService>();
             services.AddScoped<IIdentityAccessAdminService, IdentityAccessAdminService>();

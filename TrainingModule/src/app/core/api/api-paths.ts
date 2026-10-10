@@ -387,4 +387,8 @@ export const ApiPaths = {
 
   /** Client crash / network failure report → support ticket + email. */
   supportClientErrorReport: '/api/jobseekers/support/client-error-report',
+
+  /** UI showcase sample records (in-memory mock on the API). */
+  showcaseItems: '/api/v2/showcase/items',
+  showcaseItem: (id: number) => `/api/v2/showcase/items/${id}`,
 } as const;

@@ -120,6 +120,7 @@ namespace Bidding_DLL.Seeding
             yield return P(s, "js.admin.audit-trail", "/admin/audit-trail", "Audit trail", "سجل التدقيق", i++);
             yield return P(s, "js.admin.notification-transactions", "/admin/notification-transactions", "Notification transactions", "سجل الإشعارات", i++);
             yield return P(s, "js.admin.custom-notifications", "/admin/custom-notifications", "Custom notifications", "الإشعارات المخصصة", i++);
+            yield return P(s, "js.admin.showcase", "/admin/showcase", "UI showcase", "نماذج الواجهة", i++);
             yield return P(s, "js.admin.skill-categories", "/admin/skill-categories", "Skill categories", "فئات المهارات", i++);
             yield return P(s, "js.admin.skills-taxonomy", "/admin/skills-taxonomy", "Skills", "المهارات", i++);
             yield return P(s, "js.admin.jobs.list", "/admin/jobs/list", "Opportunities list", "قائمة الفرص", i++);

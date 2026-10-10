@@ -5,6 +5,7 @@ import { jobseekerProfileActions } from '../store/jobseeker-profile/jobseeker-pr
 import { adminSystemActions } from '../store/admin-system/admin-system.actions';
 import { registrationActions } from '../store/registration/registration.actions';
 import { notificationsActions } from '../store/notifications/notifications.actions';
+import { showcaseActions } from '../store/showcase/showcase.actions';
 import {
   ACCESS_TOKEN_KEY,
   REFRESH_TOKEN_KEY,
@@ -179,6 +180,7 @@ export class AuthService {
       this.store.dispatch(jobseekerProfileActions.clearCache());
       this.store.dispatch(adminSystemActions.clearCache());
       this.store.dispatch(notificationsActions.clearCache());
+      this.store.dispatch(showcaseActions.clearCache());
       this.store.dispatch(registrationActions.clearRegistration());
       clearRegistrationStorage();
     }
