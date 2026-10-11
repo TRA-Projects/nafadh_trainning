@@ -111,7 +111,7 @@ namespace Bidding_DLL.Seeding
             // Admin
             yield return P(s, "js.admin.dashboard", "/admin/dashboard", "Admin dashboard", "لوحة الإدارة", i++);
             yield return P(s, "js.admin.users", "/admin/users", "Users", "المستخدمون", i++);
-            yield return P(s, "js.admin.template-roles", "/admin/template-roles", "Template roles", "أدوار القوالب", i++);
+            yield return P(s, "js.admin.template-roles", "/admin/template-roles", "Template roles", "قوالب الأدوار", i++);
             yield return P(s, "js.admin.roles", "/admin/roles", "Custom roles", "الأدوار المخصصة", i++);
             yield return P(s, "js.admin.groups", "/admin/groups", "Groups", "المجموعات", i++);
             yield return P(s, "js.admin.system-configuration", "/admin/system-configuration", "System configuration", "إعدادات النظام", i++);

@@ -160,7 +160,7 @@ export const routes: Routes = [
           {
             path: 'template-roles',
             loadComponent: adminIdentityRolesPage,
-            data: { title: 'Template roles', titleAr: 'أدوار القوالب', rolesMode: 'template' },
+            data: { title: 'Template roles', titleAr: 'قوالب الأدوار', rolesMode: 'template' },
           },
           {
             path: 'roles/create',
