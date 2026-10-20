@@ -7,7 +7,7 @@ namespace Bidding_API.jwtConfigurations
 {
     public static class JwtBearerTokenSecretKey
     {
-        public static string AccessKeyTokenSecret = "TrainingModule-Local-AccessToken-SigningKey-ChangeMe";
-        public static string RefreshKeyTokenSecret = "TrainingModule-Local-RefreshToken-SigningKey-ChangeMe";
+        public static string AccessKeyTokenSecret = "TrainingModuleTrainingModuleTrainingModuleTrainingModuleTrainingModuleTrainingModule";
+        public static string RefreshKeyTokenSecret = "TrainingModuleTrainingModuleTrainingModuleTrainingModuleTrainingModuleTrainingModule";
     }
 }

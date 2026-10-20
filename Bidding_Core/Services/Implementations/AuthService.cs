@@ -681,7 +681,7 @@ namespace Bidding_Core.Services.Implementations
                 ?? _configuration["JwtBearerTokenSettings:Key"];
             if (!string.IsNullOrWhiteSpace(secret))
                 return secret;
-            return "TrainingModule-Local-AccessToken-SigningKey-ChangeMe";
+            return "TrainingModuleTrainingModuleTrainingModuleTrainingModuleTrainingModuleTrainingModule";
         }
 
         private string GenerateJwtAccessToken(AppUser user)
